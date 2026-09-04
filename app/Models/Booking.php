@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use MongoDB\Laravel\Eloquent\Model;
+use MongoDB\Laravel\Eloquent\Relations\BelongsTo;
 
 class Booking extends Model
 {
-    use HasFactory;
+    protected $connection = 'mongodb';
+    protected $collection = 'bookings';
 
     protected $fillable = [
         'admin_id',

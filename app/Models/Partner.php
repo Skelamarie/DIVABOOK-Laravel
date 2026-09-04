@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use MongoDB\Laravel\Auth\User as Authenticatable;
+use MongoDB\Laravel\Eloquent\Relations\HasMany;
 
 class Partner extends Authenticatable
 {
-    use HasFactory;
+    protected $connection = 'mongodb';
+    protected $collection = 'partners';
 
     protected $fillable = [
         'admin_id',
