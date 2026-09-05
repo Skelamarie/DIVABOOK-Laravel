@@ -8,12 +8,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\ServiceController;
 
 /*
 |--------------------------------------------------------------------------
 | 1. Customer Public Routes
 |--------------------------------------------------------------------------
 */
+
+// Home Page
 Route::get('/', function () {
     $partners = Partner::take(3)->get()->map(function ($partner) {
         $branding = $partner->branding ?? [];
@@ -24,12 +27,11 @@ Route::get('/', function () {
         }
 
         return [
-            'id' => (string) $partner->_id,
-            'admin_id' => $partner->admin_id ?? '',
-            'name' => $branding['salon_name'] ?? $partner->shop_name ?? 'Unnamed Service Provider',
-            'biz_type' => $partner->biz_type ?? 'Luxury Service',
+            'id'          => (string) $partner->_id,
+            'admin_id'    => $partner->admin_id ?? '',
+            'name'        => $branding['salon_name'] ?? $partner->shop_name ?? 'Unnamed Service Provider',
             'description' => $branding['description'] ?? $partner->description ?? 'Premium service provider.',
-            'logo' => !empty($logo) ? $logo : null,
+            'logo'        => !empty($logo) ? $logo : null,
         ];
     });
 
@@ -41,14 +43,105 @@ Route::get('/', function () {
     ];
 
     return Inertia::render('Customer/HomePage', [
-        'recommended' => $partners,
+        'recommended'       => $partners,
         'catalogCategories' => $catalogCategories,
     ]);
 })->name('home');
 
-Route::get('/services', function () {
-    return Inertia::render('Customer/GenServices');
+// General Services Catalog Page
+Route::get('/services', function (Request $request) {
+    $category = $request->query('category');
+    $adminId = $request->query('admin_id');
+
+    $query = Service::query();
+
+    // Filter by category if passed in query string
+    if ($category) {
+        $query->where('category', 'regex', '/' . preg_quote($category, '/') . '/i');
+    }
+
+    // Filter by partner / admin_id if passed in query string
+    if ($adminId) {
+        $query->where('admin_id', $adminId);
+    }
+
+    $services = $query->get()->map(function ($svc) {
+        $partner = Partner::where('admin_id', $svc->admin_id)->first();
+        
+        $branding = $partner->branding ?? [];
+        $shopName = $branding['salon_name'] ?? $partner->shop_name ?? 'Premier Partner';
+
+        $photosArray = is_array($svc->photos) ? $svc->photos : [];
+        $rawPhoto = !empty($photosArray) ? $photosArray[0] : ($svc->photo ?? '');
+
+        if (!empty($rawPhoto) && !filter_var($rawPhoto, FILTER_VALIDATE_URL)) {
+            $svcPhoto = '/' . ltrim($rawPhoto, '/');
+        } else {
+            $svcPhoto = !empty($rawPhoto) ? $rawPhoto : '/img/placeholder.png';
+        }
+
+        return [
+            'id'          => (string) $svc->_id,
+            'name'        => $svc->name ?? 'Untitled Service',
+            'category'    => $svc->category ?? 'General',
+            'rate'        => $svc->rate ?? '0',
+            'description' => $svc->description ?? '',
+            'photo'       => $svcPhoto,
+            'shop_name'   => $shopName,
+            'admin_id'    => $svc->admin_id ?? '',
+        ];
+    });
+
+    return Inertia::render('Customer/GenServices', [
+        'services'         => $services,
+        'selectedCategory' => $category,
+        'selectedAdminId'  => $adminId,
+    ]);
 })->name('services.index');
+
+// Individual Service / Provider Detail Page
+Route::get('/services/{id}', function ($id) {
+    $service = Service::where('_id', $id)->firstOrFail();
+    $partner = Partner::where('admin_id', $service->admin_id)->first();
+
+    $branding = $partner->branding ?? [];
+    $shopName = $branding['salon_name'] ?? $partner->shop_name ?? 'Premier Partner';
+    
+    $logo = $branding['logo_path'] ?? '';
+    if (!empty($logo) && !filter_var($logo, FILTER_VALIDATE_URL)) {
+        $logo = '/' . ltrim($logo, '/');
+    }
+
+    $photosArray = is_array($service->photos) ? $service->photos : [];
+    $rawPhoto = !empty($photosArray) ? $photosArray[0] : ($service->photo ?? '');
+
+    if (!empty($rawPhoto) && !filter_var($rawPhoto, FILTER_VALIDATE_URL)) {
+        $svcPhoto = '/' . ltrim($rawPhoto, '/');
+    } else {
+        $svcPhoto = !empty($rawPhoto) ? $rawPhoto : '/img/placeholder.png';
+    }
+
+    return Inertia::render('Customer/ServiceDetail', [
+        'service' => [
+            'id'          => (string) $service->_id,
+            'name'        => $service->name ?? 'Untitled Service',
+            'category'    => $service->category ?? 'General',
+            'rate'        => $service->rate ?? '0',
+            'description' => $service->description ?? '',
+            'duration'    => $service->duration ?? '1 hour',
+            'photo'       => $svcPhoto,
+            'provider'    => [
+                'admin_id'    => $partner->admin_id ?? '',
+                'shop_name'   => $shopName,
+                'description' => $branding['description'] ?? $partner->description ?? '',
+                'logo'        => !empty($logo) ? $logo : null,
+                'address'     => $branding['location'] ?? $partner->address ?? '',
+                'phone'       => $branding['contact_info'] ?? $partner->phone ?? '',
+                'email'       => $branding['email'] ?? $partner->email ?? '',
+            ],
+        ],
+    ]);
+})->name('services.show');
 
 /*
 |--------------------------------------------------------------------------
@@ -120,15 +213,14 @@ Route::post('/register', function (Request $request) {
     ];
 
     $partner = Partner::create([
-        'admin_id'   => $adminId,
-        'name'       => $request->name,
-        'shop_name'  => $request->shop_name,
-        'email'      => $request->email,
-        'password'   => Hash::make($request->password),
-        'phone'      => $request->phone,
-        'address'    => $request->address,
-        'biz_type'   => 'Luxury Service',
-        'branding'   => $defaultBranding,
+        'admin_id'  => $adminId,
+        'name'      => $request->name,
+        'shop_name' => $request->shop_name,
+        'email'     => $request->email,
+        'password'  => Hash::make($request->password),
+        'phone'     => $request->phone,
+        'address'   => $request->address,
+        'branding'  => $defaultBranding,
     ]);
 
     session()->regenerate();
@@ -176,7 +268,7 @@ Route::prefix('admin')->group(function () {
 
         return Inertia::render('Admin/Overview', [
             'partner' => $partner,
-            'stats' => [
+            'stats'   => [
                 'totalBookings'     => $totalBookings,
                 'pendingApprovals'  => $pendingApprovals,
                 'todayAppointments' => $todayAppointments,
@@ -245,16 +337,16 @@ Route::prefix('admin')->group(function () {
         }
 
         return response()->json([
-            'success'          => true,
-            'totalBookings'    => count($bookings),
-            'weekly'           => [
+            'success'                 => true,
+            'totalBookings'           => count($bookings),
+            'weekly'                  => [
                 'count'  => $weeklyTotal,
                 'labels' => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
                 'data'   => $weeklyDays,
             ],
-            'pendingApprovals' => $pendingCount,
-            'cancelledToday'   => $cancelledToday,
-            'todayAppointments' => [
+            'pendingApprovals'        => $pendingCount,
+            'cancelledToday'          => $cancelledToday,
+            'todayAppointments'       => [
                 'count' => $todayCount,
                 'items' => $todayAppts,
             ],

@@ -5,18 +5,17 @@ interface PartnerItem {
     id: string;
     admin_id: string;
     name: string;
-    biz_type: string;
     description: string;
     logo: string | null;
 }
 
 interface HomePageProps {
-    recommended: PartnerItem[];
-    catalogCategories: {
-        hair: boolean;
-        nails: boolean;
-        makeup: boolean;
-        spa: boolean;
+    recommended?: PartnerItem[];
+    catalogCategories?: {
+        hair?: boolean;
+        nails?: boolean;
+        makeup?: boolean;
+        spa?: boolean;
     };
 }
 
@@ -122,7 +121,7 @@ export default function HomePage({ recommended = [], catalogCategories }: HomePa
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-5">
                     {/* Haircut Card */}
                     <Link
-                        href={catalogCategories.hair ? "/services?category=Hair" : "#"}
+                        href="/services?category=hair"
                         className="md:col-span-2 h-[420px] rounded-[32px] overflow-hidden relative flex items-end group shadow-sm hover:shadow-xl transition-all duration-500 bg-stone-900"
                         style={{
                             backgroundImage: "url('/img/image1.png')",
@@ -148,7 +147,7 @@ export default function HomePage({ recommended = [], catalogCategories }: HomePa
 
                     {/* Nail Artistry Card */}
                     <Link
-                        href={catalogCategories.nails ? "/services?category=Nails" : "#"}
+                        href="/services?category=nails"
                         className="md:col-span-3 h-[420px] rounded-[32px] overflow-hidden relative flex items-end group shadow-sm hover:shadow-xl transition-all duration-500 bg-stone-900"
                         style={{
                             backgroundImage: "url('/img/image2.png')",
@@ -174,7 +173,7 @@ export default function HomePage({ recommended = [], catalogCategories }: HomePa
 
                     {/* Makeup Card */}
                     <Link
-                        href={catalogCategories.makeup ? "/services?category=Makeup" : "#"}
+                        href="/services?category=makeup"
                         className="md:col-span-3 h-[420px] rounded-[32px] overflow-hidden relative flex items-end group shadow-sm hover:shadow-xl transition-all duration-500 bg-stone-900"
                         style={{
                             backgroundImage: "url('/img/image3.png')",
@@ -192,7 +191,7 @@ export default function HomePage({ recommended = [], catalogCategories }: HomePa
 
                     {/* Spa Card */}
                     <Link
-                        href={catalogCategories.spa ? "/services?category=Skin" : "#"}
+                        href="/services?category=spa"
                         className="md:col-span-2 h-[420px] rounded-[32px] overflow-hidden relative flex items-end group shadow-sm hover:shadow-xl transition-all duration-500 bg-stone-900"
                         style={{
                             backgroundImage: "url('/img/image4.png')",
@@ -260,8 +259,7 @@ export default function HomePage({ recommended = [], catalogCategories }: HomePa
                                             )}
                                         </div>
                                         <h3 className="font-['Noto_Serif'] text-xl font-bold text-[#0C0A09]">{partner.name}</h3>
-                                        <p className="text-[#666] text-xs mb-1">{partner.biz_type}</p>
-                                        <div className="flex items-center gap-1 text-xs mb-3">
+                                        <div className="flex items-center gap-1 text-xs mb-3 mt-1">
                                             <span className="text-[#d4af37]">★★★★★</span>
                                             <span className="text-[#78716C] font-semibold">(5.0)</span>
                                         </div>
