@@ -6,8 +6,13 @@ interface CustomizationProps {
     services: any[];
 }
 
-export default function Customization({ partner, services = [] }: CustomizationProps) {
-    const [activeTab, setActiveTab] = useState<'profile' | 'services'>('profile');
+export default function Customization({
+    partner,
+    services = [],
+}: CustomizationProps) {
+    const [activeTab, setActiveTab] = useState<'profile' | 'services'>(
+        'profile',
+    );
     const [modalOpen, setModalOpen] = useState(false);
     const [editingService, setEditingService] = useState<any>(null);
 
@@ -77,46 +82,57 @@ export default function Customization({ partner, services = [] }: CustomizationP
     };
 
     return (
-        <div className="min-h-screen bg-[#faf9f6] text-stone-800 font-sans">
+        <div className="min-h-screen bg-[#faf9f6] font-sans text-stone-800">
             <Head title="Customization - Admin Portal" />
 
             {/* Top Navigation */}
-            <nav className="h-[76px] px-8 bg-white border-b border-stone-200 flex items-center justify-between sticky top-0 z-40">
+            <nav className="sticky top-0 z-40 flex h-[76px] items-center justify-between border-b border-stone-200 bg-white px-8">
                 <div className="flex items-center gap-6">
-                    <span className="font-serif italic font-black text-2xl text-[#064E3B]">DIVABOOK</span>
-                    <span className="text-xs px-2.5 py-1 bg-stone-100 rounded text-stone-600 font-mono">
+                    <span className="font-serif text-2xl font-black text-[#064E3B] italic">
+                        DIVABOOK
+                    </span>
+                    <span className="rounded bg-stone-100 px-2.5 py-1 font-mono text-xs text-stone-600">
                         Admin: {partner?.admin_id}
                     </span>
                 </div>
                 <button
                     onClick={() => router.post('/logout')}
-                    className="text-xs font-bold uppercase tracking-wider text-red-600 hover:text-red-700"
+                    className="text-xs font-bold tracking-wider text-red-600 uppercase hover:text-red-700"
                 >
                     Sign Out
                 </button>
             </nav>
 
-            <main className="max-w-6xl mx-auto p-6 md:p-8">
+            <main className="mx-auto max-w-6xl p-6 md:p-8">
                 {/* Header */}
                 <div className="mb-6">
-                    <h1 className="text-3xl font-serif font-bold text-[#064E3B]">Customization</h1>
-                    <p className="text-xs text-stone-500">Personalize your booking portal and maintain your treatments catalog.</p>
+                    <h1 className="font-serif text-3xl font-bold text-[#064E3B]">
+                        Customization
+                    </h1>
+                    <p className="text-xs text-stone-500">
+                        Personalize your booking portal and maintain your
+                        treatments catalog.
+                    </p>
                 </div>
 
                 {/* Tab Switcher Buttons */}
-                <div className="flex gap-2 border-b border-stone-200 pb-3 mb-6">
+                <div className="mb-6 flex gap-2 border-b border-stone-200 pb-3">
                     <button
                         onClick={() => setActiveTab('profile')}
-                        className={`px-4 py-2 text-xs font-bold uppercase tracking-wider rounded ${
-                            activeTab === 'profile' ? 'bg-[#064E3B] text-white' : 'bg-white border border-stone-200 text-stone-600'
+                        className={`rounded px-4 py-2 text-xs font-bold tracking-wider uppercase ${
+                            activeTab === 'profile'
+                                ? 'bg-[#064E3B] text-white'
+                                : 'border border-stone-200 bg-white text-stone-600'
                         }`}
                     >
                         Salon Profile
                     </button>
                     <button
                         onClick={() => setActiveTab('services')}
-                        className={`px-4 py-2 text-xs font-bold uppercase tracking-wider rounded ${
-                            activeTab === 'services' ? 'bg-[#064E3B] text-white' : 'bg-white border border-stone-200 text-stone-600'
+                        className={`rounded px-4 py-2 text-xs font-bold tracking-wider uppercase ${
+                            activeTab === 'services'
+                                ? 'bg-[#064E3B] text-white'
+                                : 'border border-stone-200 bg-white text-stone-600'
                         }`}
                     >
                         Service Catalog ({services.length})
@@ -125,86 +141,148 @@ export default function Customization({ partner, services = [] }: CustomizationP
 
                 {/* Tab 1: Profile Customization */}
                 {activeTab === 'profile' && (
-                    <form onSubmit={submitProfile} className="bg-white border border-stone-200 rounded-xl p-6 sm:p-8 space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <form
+                        onSubmit={submitProfile}
+                        className="space-y-6 rounded-xl border border-stone-200 bg-white p-6 sm:p-8"
+                    >
+                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                             <div className="space-y-4">
-                                <h3 className="font-bold text-sm uppercase tracking-wider text-stone-700">Business Details</h3>
+                                <h3 className="text-sm font-bold tracking-wider text-stone-700 uppercase">
+                                    Business Details
+                                </h3>
                                 <div>
-                                    <label className="block text-[10px] font-bold text-stone-500 uppercase mb-1">Salon Name</label>
+                                    <label className="mb-1 block text-[10px] font-bold text-stone-500 uppercase">
+                                        Salon Name
+                                    </label>
                                     <input
                                         type="text"
                                         value={profileForm.data.salon_name}
-                                        onChange={(e) => profileForm.setData('salon_name', e.target.value)}
-                                        className="w-full text-sm p-2.5 border border-stone-200 rounded"
+                                        onChange={(e) =>
+                                            profileForm.setData(
+                                                'salon_name',
+                                                e.target.value,
+                                            )
+                                        }
+                                        className="w-full rounded border border-stone-200 p-2.5 text-sm"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-[10px] font-bold text-stone-500 uppercase mb-1">Description</label>
+                                    <label className="mb-1 block text-[10px] font-bold text-stone-500 uppercase">
+                                        Description
+                                    </label>
                                     <textarea
                                         rows={3}
                                         value={profileForm.data.description}
-                                        onChange={(e) => profileForm.setData('description', e.target.value)}
-                                        className="w-full text-sm p-2.5 border border-stone-200 rounded"
+                                        onChange={(e) =>
+                                            profileForm.setData(
+                                                'description',
+                                                e.target.value,
+                                            )
+                                        }
+                                        className="w-full rounded border border-stone-200 p-2.5 text-sm"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-[10px] font-bold text-stone-500 uppercase mb-1">Address</label>
+                                    <label className="mb-1 block text-[10px] font-bold text-stone-500 uppercase">
+                                        Address
+                                    </label>
                                     <input
                                         type="text"
                                         value={profileForm.data.location}
-                                        onChange={(e) => profileForm.setData('location', e.target.value)}
-                                        className="w-full text-sm p-2.5 border border-stone-200 rounded"
+                                        onChange={(e) =>
+                                            profileForm.setData(
+                                                'location',
+                                                e.target.value,
+                                            )
+                                        }
+                                        className="w-full rounded border border-stone-200 p-2.5 text-sm"
                                     />
                                 </div>
                             </div>
 
                             <div className="space-y-4">
-                                <h3 className="font-bold text-sm uppercase tracking-wider text-stone-700">Brand Colors</h3>
+                                <h3 className="text-sm font-bold tracking-wider text-stone-700 uppercase">
+                                    Brand Colors
+                                </h3>
                                 <div>
-                                    <label className="block text-[10px] font-bold text-stone-500 uppercase mb-1">Primary Color</label>
+                                    <label className="mb-1 block text-[10px] font-bold text-stone-500 uppercase">
+                                        Primary Color
+                                    </label>
                                     <div className="flex items-center gap-3">
                                         <input
                                             type="color"
-                                            value={profileForm.data.color_primary}
-                                            onChange={(e) => profileForm.setData('color_primary', e.target.value)}
-                                            className="w-12 h-10 border-0 cursor-pointer rounded"
+                                            value={
+                                                profileForm.data.color_primary
+                                            }
+                                            onChange={(e) =>
+                                                profileForm.setData(
+                                                    'color_primary',
+                                                    e.target.value,
+                                                )
+                                            }
+                                            className="h-10 w-12 cursor-pointer rounded border-0"
                                         />
                                         <input
                                             type="text"
-                                            value={profileForm.data.color_primary}
-                                            onChange={(e) => profileForm.setData('color_primary', e.target.value)}
-                                            className="text-sm p-2 border border-stone-200 rounded font-mono w-28"
+                                            value={
+                                                profileForm.data.color_primary
+                                            }
+                                            onChange={(e) =>
+                                                profileForm.setData(
+                                                    'color_primary',
+                                                    e.target.value,
+                                                )
+                                            }
+                                            className="w-28 rounded border border-stone-200 p-2 font-mono text-sm"
                                         />
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label className="block text-[10px] font-bold text-stone-500 uppercase mb-1">Secondary Color</label>
+                                    <label className="mb-1 block text-[10px] font-bold text-stone-500 uppercase">
+                                        Secondary Color
+                                    </label>
                                     <div className="flex items-center gap-3">
                                         <input
                                             type="color"
-                                            value={profileForm.data.color_secondary}
-                                            onChange={(e) => profileForm.setData('color_secondary', e.target.value)}
-                                            className="w-12 h-10 border-0 cursor-pointer rounded"
+                                            value={
+                                                profileForm.data.color_secondary
+                                            }
+                                            onChange={(e) =>
+                                                profileForm.setData(
+                                                    'color_secondary',
+                                                    e.target.value,
+                                                )
+                                            }
+                                            className="h-10 w-12 cursor-pointer rounded border-0"
                                         />
                                         <input
                                             type="text"
-                                            value={profileForm.data.color_secondary}
-                                            onChange={(e) => profileForm.setData('color_secondary', e.target.value)}
-                                            className="text-sm p-2 border border-stone-200 rounded font-mono w-28"
+                                            value={
+                                                profileForm.data.color_secondary
+                                            }
+                                            onChange={(e) =>
+                                                profileForm.setData(
+                                                    'color_secondary',
+                                                    e.target.value,
+                                                )
+                                            }
+                                            className="w-28 rounded border border-stone-200 p-2 font-mono text-sm"
                                         />
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="pt-4 border-t border-stone-100 flex justify-end">
+                        <div className="flex justify-end border-t border-stone-100 pt-4">
                             <button
                                 type="submit"
                                 disabled={profileForm.processing}
-                                className="bg-[#064E3B] hover:bg-[#043d2e] text-white px-8 py-3 text-xs font-bold tracking-wider uppercase rounded"
+                                className="rounded bg-[#064E3B] px-8 py-3 text-xs font-bold tracking-wider text-white uppercase hover:bg-[#043d2e]"
                             >
-                                {profileForm.processing ? 'Saving...' : 'Save All Changes'}
+                                {profileForm.processing
+                                    ? 'Saving...'
+                                    : 'Save All Changes'}
                             </button>
                         </div>
                     </form>
@@ -213,45 +291,64 @@ export default function Customization({ partner, services = [] }: CustomizationP
                 {/* Tab 2: Service Catalog */}
                 {activeTab === 'services' && (
                     <div className="space-y-4">
-                        <div className="flex justify-between items-center">
-                            <p className="text-xs text-stone-500">Add or modify services available for customer booking.</p>
+                        <div className="flex items-center justify-between">
+                            <p className="text-xs text-stone-500">
+                                Add or modify services available for customer
+                                booking.
+                            </p>
                             <button
                                 onClick={() => openServiceModal()}
-                                className="bg-[#064E3B] hover:bg-[#043d2e] text-white px-4 py-2 text-xs font-bold tracking-wider uppercase rounded"
+                                className="rounded bg-[#064E3B] px-4 py-2 text-xs font-bold tracking-wider text-white uppercase hover:bg-[#043d2e]"
                             >
                                 + Add New Service
                             </button>
                         </div>
 
                         {services.length === 0 ? (
-                            <div className="bg-white border border-stone-200 rounded-xl p-12 text-center text-stone-400 text-sm">
-                                No services found. Click &quot;+ Add New Service&quot; to begin.
+                            <div className="rounded-xl border border-stone-200 bg-white p-12 text-center text-sm text-stone-400">
+                                No services found. Click &quot;+ Add New
+                                Service&quot; to begin.
                             </div>
                         ) : (
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                                 {services.map((svc: any) => (
-                                    <div key={svc._id || svc.id} className="bg-white border border-stone-200 rounded-xl p-5 flex flex-col justify-between">
+                                    <div
+                                        key={svc._id || svc.id}
+                                        className="flex flex-col justify-between rounded-xl border border-stone-200 bg-white p-5"
+                                    >
                                         <div>
-                                            <div className="flex justify-between items-start mb-2">
-                                                <span className="text-[10px] bg-stone-100 px-2 py-0.5 rounded font-bold uppercase text-stone-600">
+                                            <div className="mb-2 flex items-start justify-between">
+                                                <span className="rounded bg-stone-100 px-2 py-0.5 text-[10px] font-bold text-stone-600 uppercase">
                                                     {svc.category}
                                                 </span>
-                                                <span className="text-sm font-bold text-[#064E3B]">₱{svc.rate}</span>
+                                                <span className="text-sm font-bold text-[#064E3B]">
+                                                    ₱{svc.rate}
+                                                </span>
                                             </div>
-                                            <h4 className="font-bold text-stone-800 text-base mb-1">{svc.name}</h4>
-                                            <p className="text-xs text-stone-500 line-clamp-2">{svc.description}</p>
+                                            <h4 className="mb-1 text-base font-bold text-stone-800">
+                                                {svc.name}
+                                            </h4>
+                                            <p className="line-clamp-2 text-xs text-stone-500">
+                                                {svc.description}
+                                            </p>
                                         </div>
 
-                                        <div className="flex gap-2 pt-4 mt-4 border-t border-stone-100">
+                                        <div className="mt-4 flex gap-2 border-t border-stone-100 pt-4">
                                             <button
-                                                onClick={() => openServiceModal(svc)}
-                                                className="flex-1 bg-stone-100 hover:bg-stone-200 text-stone-700 py-1.5 rounded text-xs font-bold"
+                                                onClick={() =>
+                                                    openServiceModal(svc)
+                                                }
+                                                className="flex-1 rounded bg-stone-100 py-1.5 text-xs font-bold text-stone-700 hover:bg-stone-200"
                                             >
                                                 Edit
                                             </button>
                                             <button
-                                                onClick={() => deleteService(svc._id || svc.id)}
-                                                className="px-3 bg-red-50 hover:bg-red-100 text-red-600 py-1.5 rounded text-xs font-bold"
+                                                onClick={() =>
+                                                    deleteService(
+                                                        svc._id || svc.id,
+                                                    )
+                                                }
+                                                className="rounded bg-red-50 px-3 py-1.5 text-xs font-bold text-red-600 hover:bg-red-100"
                                             >
                                                 Delete
                                             </button>
@@ -266,34 +363,55 @@ export default function Customization({ partner, services = [] }: CustomizationP
 
             {/* Service Add/Edit Modal */}
             {modalOpen && (
-                <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-xl max-w-md w-full p-6 shadow-xl space-y-4">
-                        <div className="flex justify-between items-center border-b pb-2">
-                            <h3 className="font-bold text-stone-800 text-sm">
-                                {editingService ? 'Edit Service' : 'Add New Service'}
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+                    <div className="w-full max-w-md space-y-4 rounded-xl bg-white p-6 shadow-xl">
+                        <div className="flex items-center justify-between border-b pb-2">
+                            <h3 className="text-sm font-bold text-stone-800">
+                                {editingService
+                                    ? 'Edit Service'
+                                    : 'Add New Service'}
                             </h3>
-                            <button onClick={() => setModalOpen(false)} className="text-stone-400 hover:text-stone-700">✕</button>
+                            <button
+                                onClick={() => setModalOpen(false)}
+                                className="text-stone-400 hover:text-stone-700"
+                            >
+                                ✕
+                            </button>
                         </div>
 
                         <form onSubmit={submitService} className="space-y-3">
                             <div>
-                                <label className="block text-[10px] font-bold text-stone-500 uppercase mb-1">Service Name</label>
+                                <label className="mb-1 block text-[10px] font-bold text-stone-500 uppercase">
+                                    Service Name
+                                </label>
                                 <input
                                     type="text"
                                     value={serviceForm.data.service_name}
-                                    onChange={(e) => serviceForm.setData('service_name', e.target.value)}
+                                    onChange={(e) =>
+                                        serviceForm.setData(
+                                            'service_name',
+                                            e.target.value,
+                                        )
+                                    }
                                     placeholder="e.g., Soft BIAB Overlay"
-                                    className="w-full text-sm p-2 border border-stone-200 rounded"
+                                    className="w-full rounded border border-stone-200 p-2 text-sm"
                                     required
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-[10px] font-bold text-stone-500 uppercase mb-1">Category</label>
+                                <label className="mb-1 block text-[10px] font-bold text-stone-500 uppercase">
+                                    Category
+                                </label>
                                 <select
                                     value={serviceForm.data.category}
-                                    onChange={(e) => serviceForm.setData('category', e.target.value)}
-                                    className="w-full text-sm p-2 border border-stone-200 rounded"
+                                    onChange={(e) =>
+                                        serviceForm.setData(
+                                            'category',
+                                            e.target.value,
+                                        )
+                                    }
+                                    className="w-full rounded border border-stone-200 p-2 text-sm"
                                 >
                                     <option value="Hair">Hair</option>
                                     <option value="Nails">Nails</option>
@@ -304,25 +422,39 @@ export default function Customization({ partner, services = [] }: CustomizationP
                             </div>
 
                             <div>
-                                <label className="block text-[10px] font-bold text-stone-500 uppercase mb-1">Rate (₱)</label>
+                                <label className="mb-1 block text-[10px] font-bold text-stone-500 uppercase">
+                                    Rate (₱)
+                                </label>
                                 <input
                                     type="text"
                                     value={serviceForm.data.rate}
-                                    onChange={(e) => serviceForm.setData('rate', e.target.value)}
+                                    onChange={(e) =>
+                                        serviceForm.setData(
+                                            'rate',
+                                            e.target.value,
+                                        )
+                                    }
                                     placeholder="1200"
-                                    className="w-full text-sm p-2 border border-stone-200 rounded"
+                                    className="w-full rounded border border-stone-200 p-2 text-sm"
                                     required
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-[10px] font-bold text-stone-500 uppercase mb-1">Description</label>
+                                <label className="mb-1 block text-[10px] font-bold text-stone-500 uppercase">
+                                    Description
+                                </label>
                                 <textarea
                                     rows={3}
                                     value={serviceForm.data.description}
-                                    onChange={(e) => serviceForm.setData('description', e.target.value)}
+                                    onChange={(e) =>
+                                        serviceForm.setData(
+                                            'description',
+                                            e.target.value,
+                                        )
+                                    }
                                     placeholder="Describe treatment details..."
-                                    className="w-full text-sm p-2 border border-stone-200 rounded"
+                                    className="w-full rounded border border-stone-200 p-2 text-sm"
                                 />
                             </div>
 
@@ -330,14 +462,14 @@ export default function Customization({ partner, services = [] }: CustomizationP
                                 <button
                                     type="button"
                                     onClick={() => setModalOpen(false)}
-                                    className="flex-1 bg-stone-100 hover:bg-stone-200 py-2.5 rounded text-xs font-bold text-stone-600"
+                                    className="flex-1 rounded bg-stone-100 py-2.5 text-xs font-bold text-stone-600 hover:bg-stone-200"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={serviceForm.processing}
-                                    className="flex-1 bg-[#064E3B] hover:bg-[#043d2e] py-2.5 rounded text-xs font-bold text-white uppercase"
+                                    className="flex-1 rounded bg-[#064E3B] py-2.5 text-xs font-bold text-white uppercase hover:bg-[#043d2e]"
                                 >
                                     Save
                                 </button>

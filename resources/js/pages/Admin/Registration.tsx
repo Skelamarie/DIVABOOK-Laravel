@@ -19,72 +19,103 @@ export default function Registration() {
     };
 
     return (
-        <div className="min-h-screen bg-stone-50 flex flex-col justify-between font-sans">
+        <div className="flex min-h-screen flex-col justify-between bg-stone-50 font-sans">
             <Head title="DivaBook - Partner Registration" />
 
-            <header className="py-4 px-6 md:px-12 bg-[#2D4336] text-white">
-                <span className="font-serif tracking-[4px] text-lg font-bold">DIVABOOK</span>
+            <header className="bg-[#2D4336] px-6 py-4 text-white md:px-12">
+                <span className="font-serif text-lg font-bold tracking-[4px]">
+                    DIVABOOK
+                </span>
             </header>
 
-            <main className="flex-1 max-w-4xl w-full mx-auto my-8 bg-white border border-stone-200 rounded-lg shadow-sm overflow-hidden p-6 sm:p-10">
-                <p className="text-[10px] font-bold text-stone-400 tracking-widest uppercase mb-1">STEP 01 OF 02</p>
-                <h1 className="font-serif text-3xl font-bold text-[#2D4336] mb-1">Partner Registration</h1>
-                <p className="text-xs text-stone-500 mb-8">Enter your business details to create your digital storefront.</p>
+            <main className="mx-auto my-8 w-full max-w-4xl flex-1 overflow-hidden rounded-lg border border-stone-200 bg-white p-6 shadow-sm sm:p-10">
+                <p className="mb-1 text-[10px] font-bold tracking-widest text-stone-400 uppercase">
+                    STEP 01 OF 02
+                </p>
+                <h1 className="mb-1 font-serif text-3xl font-bold text-[#2D4336]">
+                    Partner Registration
+                </h1>
+                <p className="mb-8 text-xs text-stone-500">
+                    Enter your business details to create your digital
+                    storefront.
+                </p>
 
                 <form onSubmit={submit} className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div>
-                            <label className="block text-[10px] font-bold tracking-wider text-stone-600 mb-1">FULL NAME</label>
+                            <label className="mb-1 block text-[10px] font-bold tracking-wider text-stone-600">
+                                FULL NAME
+                            </label>
                             <input
                                 type="text"
                                 placeholder="Jane Doe"
                                 value={data.name}
-                                onChange={(e) => setData('name', e.target.value)}
-                                className="w-full text-sm p-3 border border-stone-300 rounded outline-none text-black bg-white placeholder-stone-400 focus:border-[#2D4336]"
+                                onChange={(e) =>
+                                    setData('name', e.target.value)
+                                }
+                                className="w-full rounded border border-stone-300 bg-white p-3 text-sm text-black placeholder-stone-400 outline-none focus:border-[#2D4336]"
                                 required
                             />
                         </div>
                         <div>
-                            <label className="block text-[10px] font-bold tracking-wider text-stone-600 mb-1">BUSINESS NAME</label>
+                            <label className="mb-1 block text-[10px] font-bold tracking-wider text-stone-600">
+                                BUSINESS NAME
+                            </label>
                             <input
                                 type="text"
                                 placeholder="Lumina Wellness"
                                 value={data.shop_name}
-                                onChange={(e) => setData('shop_name', e.target.value)}
-                                className="w-full text-sm p-3 border border-stone-300 rounded outline-none text-black bg-white placeholder-stone-400 focus:border-[#2D4336]"
+                                onChange={(e) =>
+                                    setData('shop_name', e.target.value)
+                                }
+                                className="w-full rounded border border-stone-300 bg-white p-3 text-sm text-black placeholder-stone-400 outline-none focus:border-[#2D4336]"
                                 required
                             />
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div>
-                            <label className="block text-[10px] font-bold tracking-wider text-stone-600 mb-1">BUSINESS EMAIL</label>
+                            <label className="mb-1 block text-[10px] font-bold tracking-wider text-stone-600">
+                                BUSINESS EMAIL
+                            </label>
                             <input
                                 type="email"
                                 placeholder="contact@business.com"
                                 value={data.email}
-                                onChange={(e) => setData('email', e.target.value)}
-                                className="w-full text-sm p-3 border border-stone-300 rounded outline-none text-black bg-white placeholder-stone-400 focus:border-[#2D4336]"
+                                onChange={(e) =>
+                                    setData('email', e.target.value)
+                                }
+                                className="w-full rounded border border-stone-300 bg-white p-3 text-sm text-black placeholder-stone-400 outline-none focus:border-[#2D4336]"
                                 required
                             />
-                            {errors.email && <span className="text-red-500 text-xs">{errors.email}</span>}
+                            {errors.email && (
+                                <span className="text-xs text-red-500">
+                                    {errors.email}
+                                </span>
+                            )}
                         </div>
                         <div>
-                            <label className="block text-[10px] font-bold tracking-wider text-stone-600 mb-1">PASSWORD</label>
+                            <label className="mb-1 block text-[10px] font-bold tracking-wider text-stone-600">
+                                PASSWORD
+                            </label>
                             <div className="relative">
                                 <input
                                     type={showPassword ? 'text' : 'password'}
                                     placeholder="••••••••"
                                     value={data.password}
-                                    onChange={(e) => setData('password', e.target.value)}
-                                    className="w-full text-sm p-3 border border-stone-300 rounded outline-none pr-12 text-black bg-white placeholder-stone-400 focus:border-[#2D4336]"
+                                    onChange={(e) =>
+                                        setData('password', e.target.value)
+                                    }
+                                    className="w-full rounded border border-stone-300 bg-white p-3 pr-12 text-sm text-black placeholder-stone-400 outline-none focus:border-[#2D4336]"
                                     required
                                 />
                                 <button
                                     type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-stone-500 hover:text-black"
+                                    onClick={() =>
+                                        setShowPassword(!showPassword)
+                                    }
+                                    className="absolute top-1/2 right-3 -translate-y-1/2 text-xs text-stone-500 hover:text-black"
                                 >
                                     {showPassword ? 'Hide' : 'Show'}
                                 </button>
@@ -92,26 +123,34 @@ export default function Registration() {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div>
-                            <label className="block text-[10px] font-bold tracking-wider text-stone-600 mb-1">PHONE NUMBER</label>
+                            <label className="mb-1 block text-[10px] font-bold tracking-wider text-stone-600">
+                                PHONE NUMBER
+                            </label>
                             <input
                                 type="tel"
                                 placeholder="09123456789"
                                 value={data.phone}
-                                onChange={(e) => setData('phone', e.target.value)}
-                                className="w-full text-sm p-3 border border-stone-300 rounded outline-none text-black bg-white placeholder-stone-400 focus:border-[#2D4336]"
+                                onChange={(e) =>
+                                    setData('phone', e.target.value)
+                                }
+                                className="w-full rounded border border-stone-300 bg-white p-3 text-sm text-black placeholder-stone-400 outline-none focus:border-[#2D4336]"
                                 required
                             />
                         </div>
                         <div>
-                            <label className="block text-[10px] font-bold tracking-wider text-stone-600 mb-1">BUSINESS ADDRESS</label>
+                            <label className="mb-1 block text-[10px] font-bold tracking-wider text-stone-600">
+                                BUSINESS ADDRESS
+                            </label>
                             <input
                                 type="text"
                                 placeholder="123 Serenity Way, Suite 400"
                                 value={data.address}
-                                onChange={(e) => setData('address', e.target.value)}
-                                className="w-full text-sm p-3 border border-stone-300 rounded outline-none text-black bg-white placeholder-stone-400 focus:border-[#2D4336]"
+                                onChange={(e) =>
+                                    setData('address', e.target.value)
+                                }
+                                className="w-full rounded border border-stone-300 bg-white p-3 text-sm text-black placeholder-stone-400 outline-none focus:border-[#2D4336]"
                                 required
                             />
                         </div>
@@ -126,7 +165,10 @@ export default function Registration() {
                             className="rounded text-[#2D4336] focus:ring-[#2D4336]"
                             required
                         />
-                        <label htmlFor="terms" className="text-xs text-stone-700 cursor-pointer">
+                        <label
+                            htmlFor="terms"
+                            className="cursor-pointer text-xs text-stone-700"
+                        >
                             I agree to the Partner Terms &amp; Privacy Policy.
                         </label>
                     </div>
@@ -134,28 +176,30 @@ export default function Registration() {
                     <button
                         type="submit"
                         disabled={processing}
-                        className="w-full bg-[#2D4336] hover:bg-[#1e2e25] text-white py-3.5 rounded text-xs font-bold tracking-wider uppercase transition mt-4 disabled:opacity-50"
+                        className="mt-4 w-full rounded bg-[#2D4336] py-3.5 text-xs font-bold tracking-wider text-white uppercase transition hover:bg-[#1e2e25] disabled:opacity-50"
                     >
-                        {processing ? 'CREATING ACCOUNT...' : 'REGISTER AS PARTNER'}
+                        {processing
+                            ? 'CREATING ACCOUNT...'
+                            : 'REGISTER AS PARTNER'}
                     </button>
                 </form>
 
                 <p className="mt-6 text-center text-xs text-stone-500">
                     Already have an account?{' '}
-                    <Link 
-                        href="/login" 
+                    <Link
+                        href="/login"
                         as="a"
                         onClick={(e) => {
                             e.stopPropagation();
                         }}
-                        className="text-[#2D4336] font-bold underline cursor-pointer hover:text-emerald-900"
+                        className="cursor-pointer font-bold text-[#2D4336] underline hover:text-emerald-900"
                     >
                         Log in
                     </Link>
                 </p>
             </main>
 
-            <footer className="py-4 text-center text-stone-400 text-xs border-t border-stone-200">
+            <footer className="border-t border-stone-200 py-4 text-center text-xs text-stone-400">
                 &copy; 2026 DIVABOOK WELLNESS
             </footer>
         </div>
