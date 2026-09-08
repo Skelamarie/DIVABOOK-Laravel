@@ -17,7 +17,7 @@ export default function ViewDetail({ partner, booking }: Props) {
     return (
         <div className="min-h-screen bg-[#faf9f6] text-stone-800 font-sans pt-[80px]">
             <Head title={`Booking - ${booking.first_name} ${booking.last_name}`} />
-            <AdminNavbar active="bookings" salonName={partner?.branding?.salon_name || partner?.shop_name} adminId={partner?.admin_id} />
+            <AdminNavbar active="bookings" adminId={partner?.admin_id} />
 
             <main className="max-w-5xl mx-auto px-6 py-8">
                 <Link href="/admin/bookings" className="text-xs font-bold text-[#064E3B] hover:underline mb-4 inline-block">
