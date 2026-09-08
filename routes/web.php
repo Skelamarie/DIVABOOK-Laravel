@@ -49,6 +49,11 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
+// Contact Us Page
+Route::get('/contact', function () {
+    return Inertia::render('Contact');
+})->name('contact');
+
 // General Services Catalog Page
 Route::get('/services', function (Request $request) {
     $category = $request->query('category');
@@ -178,6 +183,8 @@ Route::get('/bookings/success/{booking}', [BookingController::class, 'showSucces
 | 2. Partner Authentication Routes
 |--------------------------------------------------------------------------
 */
+
+// Login Page (Redirects to overview if logged in)
 Route::get('/login', function () {
     if (session()->has('admin_id')) {
         return redirect()->route('admin.overview');
@@ -210,7 +217,11 @@ Route::post('/login', function (Request $request) {
     ]);
 });
 
+// Registration Page (Redirects to overview if logged in)
 Route::get('/register', function () {
+    if (session()->has('admin_id')) {
+        return redirect()->route('admin.overview');
+    }
     return Inertia::render('Admin/Registration');
 })->name('register');
 
@@ -218,48 +229,72 @@ Route::post('/register', function (Request $request) {
     $request->validate([
         'name'      => ['required', 'string', 'max:255'],
         'shop_name' => ['required', 'string', 'max:255'],
-        'email'     => ['required', 'email'],
+        'email'     => ['required', 'string', 'regex:/^.+@.+\..+$/'],
         'password'  => ['required', 'string', 'min:6'],
-        'phone'     => ['required', 'string'],
+        'phone'     => ['required', 'regex:/^[0-9]{11}$/'],
         'address'   => ['required', 'string'],
+    ], [
+        'name.required'      => 'Full name is required.',
+        'shop_name.required' => 'Business name is required.',
+        'email.required'     => 'Business email is required.',
+        'email.regex'        => 'Email must contain "@" and a valid domain (e.g. name@domain.com).',
+        'password.required'  => 'Password is required.',
+        'password.min'       => 'Password must be at least 6 characters.',
+        'phone.required'     => 'Phone number is required.',
+        'phone.regex'        => 'Phone number must be exactly 11 digits (e.g. 09123456789).',
+        'address.required'   => 'Business address is required.',
     ]);
 
-    $adminId = 'DB-' . rand(1000, 9999);
+    if (!$request->terms) {
+        return back()->withErrors(['terms' => 'You must agree to the Partner Terms & Privacy Policy.']);
+    }
 
-    $defaultBranding = [
-        'salon_name'      => $request->shop_name,
-        'location'        => $request->address,
-        'contact_info'    => $request->phone,
-        'email'           => $request->email,
-        'color_primary'   => '#064E3B',
-        'color_secondary' => '#7cbf7f',
-        'description'     => '',
-        'credentials'     => '',
-        'facebook'        => '',
-        'facebook_url'    => '',
-        'instagram'       => '',
-        'instagram_url'   => '',
-        'logo_path'       => '',
-    ];
+    $existing = Partner::where('email', $request->email)->first();
+    if ($existing) {
+        return back()->withErrors(['email' => 'This email is already registered. Please log in or use another email.']);
+    }
 
-    $partner = Partner::create([
-        'admin_id'  => $adminId,
-        'name'      => $request->name,
-        'shop_name' => $request->shop_name,
-        'email'     => $request->email,
-        'password'  => Hash::make($request->password),
-        'phone'     => $request->phone,
-        'address'   => $request->address,
-        'branding'  => $defaultBranding,
-    ]);
+    try {
+        $adminId = 'DB-' . rand(1000, 9999);
 
-    session()->regenerate();
-    session([
-        'admin_id'  => $partner->admin_id,
-        'shop_name' => $partner->shop_name,
-    ]);
+        $defaultBranding = [
+            'salon_name'      => $request->shop_name,
+            'location'        => $request->address,
+            'contact_info'    => $request->phone,
+            'email'           => $request->email,
+            'color_primary'   => '#064E3B',
+            'color_secondary' => '#7cbf7f',
+            'description'     => '',
+            'credentials'     => '',
+            'facebook'        => '',
+            'facebook_url'    => '',
+            'instagram'       => '',
+            'instagram_url'   => '',
+            'logo_path'       => '',
+        ];
 
-    return redirect()->route('admin.overview');
+        $partner = Partner::create([
+            'admin_id'  => $adminId,
+            'name'      => $request->name,
+            'shop_name' => $request->shop_name,
+            'email'     => $request->email,
+            'password'  => Hash::make($request->password),
+            'phone'     => $request->phone,
+            'address'   => $request->address,
+            'branding'  => $defaultBranding,
+        ]);
+
+        session()->regenerate();
+        session([
+            'admin_id'  => $partner->admin_id ?? $adminId,
+            'shop_name' => $partner->shop_name ?? $request->shop_name,
+        ]);
+
+        // Takes new registrations to customization immediately
+        return redirect()->route('admin.customization');
+    } catch (\Throwable $e) {
+        return back()->withErrors(['general' => 'Database error: ' . $e->getMessage()]);
+    }
 });
 
 Route::post('/logout', function () {

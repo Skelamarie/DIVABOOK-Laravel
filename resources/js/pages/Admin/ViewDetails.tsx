@@ -15,6 +15,7 @@ export default function ViewDetail({ partner, booking }: Props) {
     };
 
     return (
+<<<<<<< HEAD
         <div className="min-h-screen bg-[#faf9f6] pt-[80px] font-sans text-stone-800">
             <Head
                 title={`Booking - ${booking.first_name} ${booking.last_name}`}
@@ -24,6 +25,11 @@ export default function ViewDetail({ partner, booking }: Props) {
                 salonName={partner?.branding?.salon_name || partner?.shop_name}
                 adminId={partner?.admin_id}
             />
+=======
+        <div className="min-h-screen bg-[#faf9f6] text-stone-800 font-sans pt-[80px]">
+            <Head title={`Booking - ${booking.first_name} ${booking.last_name}`} />
+            <AdminNavbar active="bookings" adminId={partner?.admin_id} />
+>>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
 
             <main className="mx-auto max-w-5xl px-6 py-8">
                 <Link

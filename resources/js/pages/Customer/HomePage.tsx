@@ -67,14 +67,25 @@ export default function HomePage({
                     </Link>
                 </div>
 
+<<<<<<< HEAD
                 <div className="hidden items-center gap-[30px] text-[13px] tracking-[1.5px] md:flex">
                     <Link
                         href="/contact"
                         className="transition hover:text-emerald-200"
                     >
+=======
+                <div className="hidden md:flex items-center gap-[30px] text-[13px] tracking-[1.5px]">
+                    <Link href="/contact" className="hover:text-emerald-200 transition uppercase">
+>>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
                         CONTACT US
                     </Link>
-                    <span className="cursor-pointer text-base">🔍</span>
+                    <button 
+                        type="button" 
+                        aria-label="Search" 
+                        className="cursor-pointer text-base focus:outline-none hover:opacity-80 transition"
+                    >
+                        🔍
+                    </button>
                 </div>
 
                 {/* Mobile Hamburger Button */}
@@ -97,23 +108,42 @@ export default function HomePage({
                     <button
                         onClick={() => setMobileNavOpen(false)}
                         className="self-end text-2xl font-light text-[#0C0A09] focus:outline-none"
+                        aria-label="Close menu"
                     >
                         ✕
                     </button>
+<<<<<<< HEAD
                     <Link
                         href="/"
+=======
+                    <Link 
+                        href="/" 
+                        onClick={() => setMobileNavOpen(false)}
+>>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
                         className="text-lg font-medium tracking-[1.5px] text-[#064E3B]"
                     >
                         HOME
                     </Link>
+<<<<<<< HEAD
                     <Link
                         href="/services"
+=======
+                    <Link 
+                        href="/services" 
+                        onClick={() => setMobileNavOpen(false)}
+>>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
                         className="text-lg font-medium tracking-[1.5px] hover:text-[#064E3B]"
                     >
                         SERVICES
                     </Link>
+<<<<<<< HEAD
                     <Link
                         href="/contact"
+=======
+                    <Link 
+                        href="/contact" 
+                        onClick={() => setMobileNavOpen(false)}
+>>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
                         className="text-lg font-medium tracking-[1.5px] hover:text-[#064E3B]"
                     >
                         CONTACT US
@@ -414,8 +444,13 @@ export default function HomePage({
                     </div>
                 </div>
 
+<<<<<<< HEAD
                 <div className="mt-14 border-t border-[#E7E5E4] pt-5 text-center text-xs text-[#78716C]">
                     © 2026 DivaBook. The Luxury of Care.
+=======
+                <div className="mt-14 pt-5 border-t border-[#E7E5E4] text-center text-xs text-[#78716C]">
+                    © {new Date().getFullYear()} DivaBook. The Luxury of Care.
+>>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
                 </div>
             </footer>
         </div>
