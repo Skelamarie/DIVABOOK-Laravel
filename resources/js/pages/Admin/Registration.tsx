@@ -144,11 +144,7 @@ export default function Registration() {
                     Already have an account?{' '}
                     <Link 
                         href="/login" 
-                        as="a"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                        }}
-                        className="text-[#2D4336] font-bold underline cursor-pointer hover:text-emerald-900"
+                        className="text-[#2D4336] font-bold underline hover:text-emerald-900"
                     >
                         Log in
                     </Link>
