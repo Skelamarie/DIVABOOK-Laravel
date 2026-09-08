@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Head, router, useForm } from '@inertiajs/react';
+import AdminNavbar from '@/components/AdminNavbar';
 
 interface CustomizationProps {
     partner: any;
@@ -77,24 +78,9 @@ export default function Customization({ partner, services = [] }: CustomizationP
     };
 
     return (
-        <div className="min-h-screen bg-[#faf9f6] text-stone-800 font-sans">
+        <div className="min-h-screen bg-[#faf9f6] text-stone-800 font-sans pt-[80px]">
             <Head title="Customization - Admin Portal" />
-
-            {/* Top Navigation */}
-            <nav className="h-[76px] px-8 bg-white border-b border-stone-200 flex items-center justify-between sticky top-0 z-40">
-                <div className="flex items-center gap-6">
-                    <span className="font-serif italic font-black text-2xl text-[#064E3B]">DIVABOOK</span>
-                    <span className="text-xs px-2.5 py-1 bg-stone-100 rounded text-stone-600 font-mono">
-                        Admin: {partner?.admin_id}
-                    </span>
-                </div>
-                <button
-                    onClick={() => router.post('/logout')}
-                    className="text-xs font-bold uppercase tracking-wider text-red-600 hover:text-red-700"
-                >
-                    Sign Out
-                </button>
-            </nav>
+            <AdminNavbar active="customization" adminId={partner?.admin_id} />
 
             <main className="max-w-6xl mx-auto p-6 md:p-8">
                 {/* Header */}

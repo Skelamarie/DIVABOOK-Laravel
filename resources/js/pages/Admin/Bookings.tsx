@@ -19,7 +19,7 @@ export default function Bookings({ partner, appointments = {}, pendingRequests =
     return (
         <div className="min-h-screen bg-[#faf9f6] text-stone-800 font-sans pt-[80px]">
             <Head title="Bookings & Appointments - Admin" />
-            <AdminNavbar active="bookings" salonName={partner?.branding?.salon_name || partner?.shop_name} adminId={partner?.admin_id} />
+            <AdminNavbar active="bookings" adminId={partner?.admin_id} />
 
             <main className="max-w-7xl mx-auto px-6 py-8 space-y-8">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-stone-200 pb-4">

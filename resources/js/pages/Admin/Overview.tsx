@@ -51,7 +51,7 @@ export default function Overview({ partner, stats }: Props) {
     return (
         <div className="min-h-screen bg-[#faf9f6] text-stone-800 font-sans pt-[80px]">
             <Head title="Overview - Admin Portal" />
-            <AdminNavbar active="overview" salonName={partner?.branding?.salon_name || partner?.shop_name} adminId={partner?.admin_id} />
+            <AdminNavbar active="overview" adminId={partner?.admin_id} />
 
             <main className="max-w-6xl mx-auto px-6 py-8">
                 <div className="flex justify-between items-end mb-6 border-b border-stone-200 pb-4">
