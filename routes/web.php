@@ -48,6 +48,11 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
+// Contact Us Page
+Route::get('/contact', function () {
+    return Inertia::render('Contact');
+})->name('contact');
+
 // General Services Catalog Page
 Route::get('/services', function (Request $request) {
     $category = $request->query('category');

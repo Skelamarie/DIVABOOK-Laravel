@@ -52,10 +52,16 @@ export default function HomePage({ recommended = [], catalogCategories }: HomePa
                 </div>
 
                 <div className="hidden md:flex items-center gap-[30px] text-[13px] tracking-[1.5px]">
-                    <Link href="/contact" className="hover:text-emerald-200 transition">
+                    <Link href="/contact" className="hover:text-emerald-200 transition uppercase">
                         CONTACT US
                     </Link>
-                    <span className="cursor-pointer text-base">🔍</span>
+                    <button 
+                        type="button" 
+                        aria-label="Search" 
+                        className="cursor-pointer text-base focus:outline-none hover:opacity-80 transition"
+                    >
+                        🔍
+                    </button>
                 </div>
 
                 {/* Mobile Hamburger Button */}
@@ -78,16 +84,29 @@ export default function HomePage({ recommended = [], catalogCategories }: HomePa
                     <button
                         onClick={() => setMobileNavOpen(false)}
                         className="self-end text-2xl font-light text-[#0C0A09] focus:outline-none"
+                        aria-label="Close menu"
                     >
                         ✕
                     </button>
-                    <Link href="/" className="text-lg font-medium tracking-[1.5px] text-[#064E3B]">
+                    <Link 
+                        href="/" 
+                        onClick={() => setMobileNavOpen(false)}
+                        className="text-lg font-medium tracking-[1.5px] text-[#064E3B]"
+                    >
                         HOME
                     </Link>
-                    <Link href="/services" className="text-lg font-medium tracking-[1.5px] hover:text-[#064E3B]">
+                    <Link 
+                        href="/services" 
+                        onClick={() => setMobileNavOpen(false)}
+                        className="text-lg font-medium tracking-[1.5px] hover:text-[#064E3B]"
+                    >
                         SERVICES
                     </Link>
-                    <Link href="/contact" className="text-lg font-medium tracking-[1.5px] hover:text-[#064E3B]">
+                    <Link 
+                        href="/contact" 
+                        onClick={() => setMobileNavOpen(false)}
+                        className="text-lg font-medium tracking-[1.5px] hover:text-[#064E3B]"
+                    >
                         CONTACT US
                     </Link>
                 </div>
@@ -335,7 +354,7 @@ export default function HomePage({ recommended = [], catalogCategories }: HomePa
                 </div>
 
                 <div className="mt-14 pt-5 border-t border-[#E7E5E4] text-center text-xs text-[#78716C]">
-                    © 2026 DivaBook. The Luxury of Care.
+                    © {new Date().getFullYear()} DivaBook. The Luxury of Care.
                 </div>
             </footer>
         </div>
