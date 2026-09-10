@@ -7,7 +7,7 @@ interface Appointment {
     title: string;
     time: string;
     date: string;
-    type?: string; // 'appt-accepted' | 'appt-pending' | 'appt-declined' | 'appt-queue'
+    type?: string;
     status?: string;
     name: string;
     email: string;
@@ -18,6 +18,7 @@ interface Appointment {
 
 interface PendingRequest {
     _id: string;
+    id?: string;
     first_name: string;
     last_name: string;
     email: string;
@@ -54,7 +55,6 @@ export default function Bookings({ partner, appointments = {}, pendingRequests =
         router.post(`/admin/bookings/${id}/status`, { status: newStatus });
     };
 
-    // Style badge mappings equivalent to BnA.php
     const getStatusStyle = (type?: string, status?: string) => {
         const check = type || status || 'pending';
         if (check.includes('accepted') || check.includes('approved')) {
@@ -69,7 +69,6 @@ export default function Bookings({ partner, appointments = {}, pendingRequests =
         return 'bg-amber-100 text-amber-800 border-l-4 border-amber-600';
     };
 
-    // Navigation logic from BnA.php
     const navigate = (direction: number) => {
         const next = new Date(currentDate);
         if (viewMode === 'day') {
@@ -82,7 +81,6 @@ export default function Bookings({ partner, appointments = {}, pendingRequests =
         setCurrentDate(next);
     };
 
-    // Calculate start of the week (Monday)
     const activeMonday = useMemo(() => {
         const d = new Date(currentDate);
         const dayOffset = d.getDay() === 0 ? 6 : d.getDay() - 1;
@@ -91,7 +89,6 @@ export default function Bookings({ partner, appointments = {}, pendingRequests =
         return d;
     }, [currentDate]);
 
-    // Populate dropdown options matching BnA.php populateDayDropdown()
     const dropdownOptions = useMemo(() => {
         const year = currentDate.getFullYear();
         const month = currentDate.getMonth();
@@ -138,7 +135,6 @@ export default function Bookings({ partner, appointments = {}, pendingRequests =
         return [];
     }, [currentDate, viewMode, activeMonday]);
 
-    // Current dropdown selected value
     const selectedDropdownVal = useMemo(() => {
         if (viewMode === 'day') {
             return currentDate.toISOString().split('T')[0];
@@ -146,7 +142,6 @@ export default function Bookings({ partner, appointments = {}, pendingRequests =
         return activeMonday.toISOString().split('T')[0];
     }, [viewMode, currentDate, activeMonday]);
 
-    // Convert time string into vertical offset in the grid
     const calculateTopOffset = (timeStr: string) => {
         const match = timeStr.match(/(\d+):(\d+)\s*(AM|PM)/i);
         if (!match) return 0;
@@ -157,10 +152,9 @@ export default function Bookings({ partner, appointments = {}, pendingRequests =
         if (h < 12 && ampm === 'PM') h += 12;
 
         const hoursFromStart = (h - 9) + (m / 60);
-        return Math.max(0, hoursFromStart * 64); // 64px is each 1-hour slot height
+        return Math.max(0, hoursFromStart * 64);
     };
 
-    // Days to show in Day / Week view
     const daysToRender = useMemo(() => {
         if (viewMode === 'day') {
             const dateKey = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`;
@@ -187,7 +181,6 @@ export default function Bookings({ partner, appointments = {}, pendingRequests =
         return days;
     }, [viewMode, currentDate, activeMonday]);
 
-    //calendar : month
     const monthCells = useMemo(() => {
         if (viewMode !== 'month') return [];
         const year = currentDate.getFullYear();
@@ -218,7 +211,6 @@ export default function Bookings({ partner, appointments = {}, pendingRequests =
             <AdminNavbar active="bookings" adminId={partner?.admin_id} />
 
             <main className="max-w-7xl mx-auto px-6 py-8 space-y-8">
-                {/* Page Title Header */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-stone-200 pb-4">
                     <div>
                         <h1 className="text-3xl font-serif font-bold text-stone-900">Booking &amp; Appointment</h1>
@@ -227,20 +219,18 @@ export default function Bookings({ partner, appointments = {}, pendingRequests =
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                    {/* Main Calendar Card */}
                     <div className="lg:col-span-8 bg-white border border-stone-200 rounded-xl shadow-sm flex flex-col overflow-hidden">
-                        {/* Toolbar */}
                         <div className="p-4 border-b border-stone-200 flex flex-wrap items-center justify-between gap-3">
                             <div className="flex items-center gap-3">
                                 <h2 className="text-lg font-bold text-[#064E3B] font-serif">
                                     {currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                                 </h2>
 
-                                {/* Navigation Arrows and Range Select */}
                                 <div className="flex items-center border border-stone-200 rounded-md overflow-hidden bg-white">
                                     <button
+                                        type="button"
                                         onClick={() => navigate(-1)}
-                                        className="px-2.5 py-1 text-stone-600 hover:bg-stone-50 text-sm font-bold border-r border-stone-200 transition"
+                                        className="px-2.5 py-1 text-stone-600 hover:bg-stone-50 text-sm font-bold border-r border-stone-200 transition cursor-pointer"
                                     >
                                         &lsaquo;
                                     </button>
@@ -264,48 +254,48 @@ export default function Bookings({ partner, appointments = {}, pendingRequests =
                                     )}
 
                                     <button
+                                        type="button"
                                         onClick={() => navigate(1)}
-                                        className="px-2.5 py-1 text-stone-600 hover:bg-stone-50 text-sm font-bold border-l border-stone-200 transition"
+                                        className="px-2.5 py-1 text-stone-600 hover:bg-stone-50 text-sm font-bold border-l border-stone-200 transition cursor-pointer"
                                     >
                                         &rsaquo;
                                     </button>
                                 </div>
                             </div>
 
-                            {/* View Switchers */}
                             <div className="flex bg-stone-100 p-1 rounded-lg border border-stone-200">
                                 <button
+                                    type="button"
                                     onClick={() => setViewMode('day')}
-                                    className={`px-3 py-1 text-xs font-semibold rounded-md transition ${viewMode === 'day' ? 'bg-white shadow-sm text-stone-900' : 'text-stone-500 hover:text-stone-800'}`}
+                                    className={`px-3 py-1 text-xs font-semibold rounded-md transition cursor-pointer ${viewMode === 'day' ? 'bg-white shadow-sm text-stone-900' : 'text-stone-500 hover:text-stone-800'}`}
                                 >
                                     Day
                                 </button>
                                 <button
+                                    type="button"
                                     onClick={() => setViewMode('week')}
-                                    className={`px-3 py-1 text-xs font-semibold rounded-md transition ${viewMode === 'week' ? 'bg-white shadow-sm text-stone-900' : 'text-stone-500 hover:text-stone-800'}`}
+                                    className={`px-3 py-1 text-xs font-semibold rounded-md transition cursor-pointer ${viewMode === 'week' ? 'bg-white shadow-sm text-stone-900' : 'text-stone-500 hover:text-stone-800'}`}
                                 >
                                     Week
                                 </button>
                                 <button
+                                    type="button"
                                     onClick={() => setViewMode('month')}
-                                    className={`px-3 py-1 text-xs font-semibold rounded-md transition ${viewMode === 'month' ? 'bg-white shadow-sm text-stone-900' : 'text-stone-500 hover:text-stone-800'}`}
+                                    className={`px-3 py-1 text-xs font-semibold rounded-md transition cursor-pointer ${viewMode === 'month' ? 'bg-white shadow-sm text-stone-900' : 'text-stone-500 hover:text-stone-800'}`}
                                 >
                                     Month
                                 </button>
                             </div>
                         </div>
 
-                        {/* Calendar Body: Day & Week View */}
                         {(viewMode === 'day' || viewMode === 'week') && (
                             <div className="overflow-x-auto">
                                 <div className={`min-w-[650px] grid ${viewMode === 'day' ? 'grid-cols-[70px_1fr]' : 'grid-cols-[70px_repeat(7,1fr)]'} divide-x divide-stone-200`}>
-                                    {/* Header Corner Spacer */}
                                     <div className="h-10 bg-stone-50/50 border-b border-stone-200"></div>
 
-                                    {/* Day Headers */}
                                     {daysToRender.map((day) => (
                                         <div
-                                            key={day.dateKey}
+                                            key={`day-header-${day.dateKey}`}
                                             className={`h-10 border-b border-stone-200 flex items-center justify-center font-bold text-xs ${
                                                 day.isToday ? 'text-emerald-800 bg-emerald-50/40' : 'text-stone-600 bg-stone-50/30'
                                             }`}
@@ -314,31 +304,28 @@ export default function Bookings({ partner, appointments = {}, pendingRequests =
                                         </div>
                                     ))}
 
-                                    {/* Time Labels Column */}
                                     <div className="divide-y divide-stone-100 bg-stone-50/20">
                                         {TIME_SLOTS.map((slot) => (
-                                            <div key={slot} className="h-16 text-[10px] text-stone-400 font-medium px-2 pt-1">
+                                            <div key={`timeslot-label-${slot}`} className="h-16 text-[10px] text-stone-400 font-medium px-2 pt-1">
                                                 {slot}
                                             </div>
                                         ))}
                                     </div>
 
-                                    {/* Day Content Columns with Bookings */}
                                     {daysToRender.map((day) => {
                                         const dayAppts = appointments[day.dateKey] || [];
                                         return (
-                                            <div key={day.dateKey} className="relative divide-y divide-stone-100 min-h-[448px]">
-                                                {/* Background Grid Lines */}
+                                            <div key={`day-col-${day.dateKey}`} className="relative divide-y divide-stone-100 min-h-[448px]">
                                                 {TIME_SLOTS.map((slot) => (
-                                                    <div key={slot} className="h-16"></div>
+                                                    <div key={`grid-line-${day.dateKey}-${slot}`} className="h-16"></div>
                                                 ))}
 
-                                                {/* Positioned Appointments */}
-                                                {dayAppts.map((appt) => {
+                                                {dayAppts.map((appt, idx) => {
                                                     const topPos = calculateTopOffset(appt.time);
+                                                    const uniqueKey = appt.id ? `appt-${appt.id}` : `appt-${day.dateKey}-${idx}`;
                                                     return (
                                                         <div
-                                                            key={appt.id}
+                                                            key={uniqueKey}
                                                             onClick={() => setSelectedAppt(appt)}
                                                             style={{ top: `${topPos}px` }}
                                                             className={`absolute left-1 right-1 p-1.5 text-[10px] rounded shadow-xs cursor-pointer z-10 hover:opacity-90 transition ${getStatusStyle(
@@ -358,26 +345,25 @@ export default function Bookings({ partner, appointments = {}, pendingRequests =
                             </div>
                         )}
 
-                        {/* Calendar Body: Month View */}
                         {viewMode === 'month' && (
                             <div className="p-4">
                                 <div className="grid grid-cols-7 gap-2 border border-stone-200 rounded-lg p-3 bg-stone-50/50">
                                     {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
-                                        <div key={day} className="text-center font-bold text-xs text-stone-400 py-1">
+                                        <div key={`month-header-${day}`} className="text-center font-bold text-xs text-stone-400 py-1">
                                             {day}
                                         </div>
                                     ))}
 
                                     {monthCells.map((cell, i) => {
                                         if (!cell) {
-                                            return <div key={`empty-${i}`} className="min-h-[80px]" />;
+                                            return <div key={`month-empty-${i}`} className="min-h-[80px]" />;
                                         }
 
                                         const dayAppts = appointments[cell.dateKey] || [];
 
                                         return (
                                             <div
-                                                key={cell.dateKey}
+                                                key={`month-cell-${cell.dateKey}`}
                                                 className={`bg-white border ${
                                                     cell.isToday ? 'border-emerald-500 ring-1 ring-emerald-500' : 'border-stone-100'
                                                 } rounded min-h-[80px] p-1.5 flex flex-col justify-between`}
@@ -387,9 +373,9 @@ export default function Bookings({ partner, appointments = {}, pendingRequests =
                                                 </span>
 
                                                 <div className="space-y-1 overflow-y-auto max-h-[60px]">
-                                                    {dayAppts.map((appt) => (
+                                                    {dayAppts.map((appt, idx) => (
                                                         <div
-                                                            key={appt.id}
+                                                            key={appt.id ? `month-appt-${appt.id}` : `month-appt-${cell.dateKey}-${idx}`}
                                                             onClick={() => setSelectedAppt(appt)}
                                                             className={`p-1 text-[9px] font-bold rounded cursor-pointer truncate ${getStatusStyle(
                                                                 appt.type,
@@ -408,7 +394,6 @@ export default function Bookings({ partner, appointments = {}, pendingRequests =
                         )}
                     </div>
 
-                    {/* Client Information Sidebar Inspector Card */}
                     <aside className="lg:col-span-4 bg-white border border-stone-200 rounded-xl p-6 shadow-sm flex flex-col justify-between h-fit">
                         <div>
                             <div className="flex items-center justify-between border-b border-stone-100 pb-3 mb-4">
@@ -453,7 +438,6 @@ export default function Bookings({ partner, appointments = {}, pendingRequests =
                     </aside>
                 </div>
 
-                {/* Table of Recent Service Inquiries */}
                 <div className="bg-white border border-stone-200 rounded-xl shadow-sm overflow-hidden">
                     <div className="p-4 border-b border-stone-200 flex justify-between items-center">
                         <h3 className="font-bold text-xs uppercase tracking-wider text-stone-800">
@@ -480,38 +464,43 @@ export default function Bookings({ partner, appointments = {}, pendingRequests =
                                         </td>
                                     </tr>
                                 ) : (
-                                    pendingRequests.map(req => (
-                                        <tr key={req._id} className="hover:bg-stone-50">
-                                            <td className="p-3 font-bold text-stone-800">
-                                                {req.first_name} {req.last_name}
-                                                <span className="block font-normal text-stone-400 text-[10px]">{req.email}</span>
-                                            </td>
-                                            <td className="p-3">{req.service_name || 'Service'}</td>
-                                            <td className="p-3 text-stone-500">{req.selected_date} • {req.selected_time}</td>
-                                            <td className="p-3 capitalize text-stone-600">{req.payment_strategy || 'N/A'}</td>
-                                            <td className="p-3 font-bold">₱{Number(req.amount_paid || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
-                                            <td className="p-3 text-right space-x-2">
-                                                <button
-                                                    onClick={() => updateStatus(req._id, 'approved')}
-                                                    className="px-3 py-1 bg-[#064E3B] hover:bg-[#043d2e] text-white rounded font-bold text-[10px]"
-                                                >
-                                                    Approve
-                                                </button>
-                                                <button
-                                                    onClick={() => updateStatus(req._id, 'declined')}
-                                                    className="px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded font-bold text-[10px]"
-                                                >
-                                                    Decline
-                                                </button>
-                                                <Link
-                                                    href={`/admin/bookings/${req._id}`}
-                                                    className="px-2 py-1 text-stone-500 hover:text-stone-800 font-bold underline text-[10px]"
-                                                >
-                                                    Details
-                                                </Link>
-                                            </td>
-                                        </tr>
-                                    ))
+                                    pendingRequests.map((req, idx) => {
+                                      const reqId = (req._id || req.id || String(idx)).toString();
+                                        return (
+                                            <tr key={`req-row-${reqId}`} className="hover:bg-stone-50">
+                                                <td className="p-3 font-bold text-stone-800">
+                                                    {req.first_name} {req.last_name}
+                                                    <span className="block font-normal text-stone-400 text-[10px]">{req.email}</span>
+                                                </td>
+                                                <td className="p-3">{req.service_name || 'Service'}</td>
+                                                <td className="p-3 text-stone-500">{req.selected_date} • {req.selected_time}</td>
+                                                <td className="p-3 capitalize text-stone-600">{req.payment_strategy || 'N/A'}</td>
+                                                <td className="p-3 font-bold">₱{Number(req.amount_paid || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+                                                <td className="p-3 text-right space-x-2">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => updateStatus(reqId, 'approved')}
+                                                        className="px-3 py-1 bg-[#064E3B] hover:bg-[#043d2e] text-white rounded font-bold text-[10px] cursor-pointer"
+                                                    >
+                                                        Approve
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => updateStatus(reqId, 'declined')}
+                                                        className="px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded font-bold text-[10px] cursor-pointer"
+                                                    >
+                                                        Decline
+                                                    </button>
+                                                    <Link
+                                                        href={`/admin/bookings/${reqId}`}
+                                                        className="px-2 py-1 text-stone-500 hover:text-stone-800 font-bold underline text-[10px]"
+                                                    >
+                                                        Details
+                                                    </Link>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })
                                 )}
                             </tbody>
                         </table>

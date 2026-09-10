@@ -184,7 +184,7 @@ Route::post('/login', function (Request $request) {
 
     return back()->withErrors([
         'auth_failed' => 'Invalid Admin-ID, Email, or Password.',
-    ]);
+    ])->withInput($request->only('admin_id', 'email'));
 });
 
 // Registration Page (Redirects to overview if logged in)
@@ -280,7 +280,6 @@ Route::post('/logout', function () {
 */
 Route::prefix('admin')->group(function () {
 
-    // Overview
     Route::get('/overview', function () {
         if (!session()->has('admin_id')) {
             return redirect()->route('login');
@@ -312,154 +311,7 @@ Route::prefix('admin')->group(function () {
         ]);
     })->name('admin.overview');
 
-    // Live Stats API
-    Route::get('/api/overview-stats', function () {
-        $adminId = session('admin_id');
-        if (!$adminId) {
-            return response()->json(['success' => false, 'error' => 'Unauthorized'], 401);
-        }
-
-        $now = Carbon::now('Asia/Manila');
-        $todayDate = $now->format('Y-m-d');
-        $bookings = Booking::where('admin_id', $adminId)->get();
-
-        $weekStart = (clone $now)->startOfWeek();
-        $weekEnd = (clone $now)->endOfWeek();
-        $weeklyDays = array_fill(0, 7, 0);
-        $weeklyTotal = 0;
-
-        $pendingReqs = [];
-        $todayAppts = [];
-        $pendingCount = 0;
-        $cancelledToday = 0;
-        $todayCount = 0;
-
-        foreach ($bookings as $b) {
-            $status = strtolower($b->status ?? 'pending');
-            $date = Carbon::parse($b->selected_date);
-
-            if ($status === 'pending') {
-                $pendingCount++;
-                $pendingReqs[] = [
-                    'id'      => (string) $b->_id,
-                    'name'    => trim(($b->first_name ?? '') . ' ' . ($b->last_name ?? '')),
-                    'service' => $b->service_name ?? 'Service',
-                    'date'    => $b->selected_date,
-                    'time'    => $b->selected_time ?? 'N/A',
-                ];
-            }
-
-            if ($date->format('Y-m-d') === $todayDate) {
-                if (in_array($status, ['declined', 'cancelled'])) {
-                    $cancelledToday++;
-                } else {
-                    $todayCount++;
-                    $todayAppts[] = [
-                        'id'      => (string) $b->_id,
-                        'name'    => trim(($b->first_name ?? '') . ' ' . ($b->last_name ?? '')),
-                        'service' => $b->service_name ?? 'Service',
-                        'time'    => $b->selected_time ?? 'N/A',
-                        'status'  => $status,
-                    ];
-                }
-            }
-
-            if ($date->between($weekStart, $weekEnd)) {
-                $dayIndex = ($date->dayOfWeekIso - 1);
-                $weeklyDays[$dayIndex]++;
-                $weeklyTotal++;
-            }
-        }
-
-        return response()->json([
-            'success'                 => true,
-            'totalBookings'           => count($bookings),
-            'weekly'                  => [
-                'count'  => $weeklyTotal,
-                'labels' => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                'data'   => $weeklyDays,
-            ],
-            'pendingApprovals'        => $pendingCount,
-            'cancelledToday'          => $cancelledToday,
-            'todayAppointments'       => [
-                'count' => $todayCount,
-                'items' => $todayAppts,
-            ],
-            'pendingServiceApprovals' => [
-                'count' => $pendingCount,
-                'items' => $pendingReqs,
-            ],
-        ]);
-    });
-
-    // Bookings Calendar
-    Route::get('/bookings', function () {
-        if (!session()->has('admin_id')) {
-            return redirect()->route('login');
-        }
-
-        $adminId = session('admin_id');
-        $partner = Partner::where('admin_id', $adminId)->first();
-        $bookings = Booking::where('admin_id', $adminId)->get();
-
-        $calendarAppts = [];
-        $pendingRequests = [];
-
-        foreach ($bookings as $doc) {
-            $dateKey = Carbon::parse($doc->selected_date)->format('Y-n-j');
-            $status = strtolower($doc->status ?? 'pending');
-
-            if ($status === 'pending') {
-                $pendingRequests[] = $doc;
-            }
-
-            $calendarAppts[$dateKey][] = [
-                'id'      => (string) $doc->_id,
-                'title'   => $doc->service_name ?? 'Service',
-                'time'    => $doc->selected_time ?? '',
-                'date'    => $doc->selected_date ?? '',
-                'status'  => $status,
-                'name'    => trim(($doc->first_name ?? '') . ' ' . ($doc->last_name ?? '')),
-                'email'   => $doc->email ?? '',
-                'request' => $doc->special_requests ?? '',
-                'method'  => $doc->payment_method ?? 'N/A',
-                'paid'    => number_format((float) ($doc->amount_paid ?? 0), 2),
-            ];
-        }
-
-        return Inertia::render('Admin/Bookings', [
-            'partner'         => $partner,
-            'appointments'    => $calendarAppts,
-            'pendingRequests' => $pendingRequests,
-        ]);
-    })->name('admin.bookings');
-
-    Route::post('/bookings/{id}/status', function (Request $request, $id) {
-        $adminId = session('admin_id');
-        $request->validate(['status' => 'required|string']);
-
-        $booking = Booking::where('_id', $id)->where('admin_id', $adminId)->firstOrFail();
-        $booking->update(['status' => $request->status]);
-
-        return back();
-    })->name('admin.bookings.status');
-
-    Route::get('/bookings/{id}', function ($id) {
-        if (!session()->has('admin_id')) {
-            return redirect()->route('login');
-        }
-
-        $adminId = session('admin_id');
-        $partner = Partner::where('admin_id', $adminId)->first();
-        $booking = Booking::where('_id', $id)->where('admin_id', $adminId)->firstOrFail();
-
-        return Inertia::render('Admin/ViewDetail', [
-            'partner' => $partner,
-            'booking' => $booking,
-        ]);
-    })->name('admin.bookings.detail');
-
-    // Customization
+    // Customization View
     Route::get('/customization', function () {
         if (!session()->has('admin_id')) {
             return redirect()->route('login');
@@ -475,31 +327,57 @@ Route::prefix('admin')->group(function () {
         ]);
     })->name('admin.customization');
 
+    // Save Profile & Logo
     Route::post('/profile', function (Request $request) {
         $adminId = session('admin_id');
         $partner = Partner::where('admin_id', $adminId)->firstOrFail();
 
-        $branding = array_merge($partner->branding ?? [], [
-            'salon_name'      => $request->salon_name,
-            'description'     => $request->description,
-            'credentials'     => $request->credentials,
-            'location'        => $request->location,
-            'contact_info'    => $request->contact_info,
-            'email'           => $request->email,
-            'facebook'        => $request->facebook,
-            'facebook_url'    => $request->facebook_url,
-            'instagram'       => $request->instagram,
-            'instagram_url'   => $request->instagram_url,
+        $branding = $partner->branding ?? [];
+        $logoPath = $branding['logo_path'] ?? '';
+
+        // Handle uploaded logo
+        if ($request->hasFile('logo')) {
+            $path = $request->file('logo')->store("branding/{$adminId}", 'public');
+            $logoPath = Storage::url($path);
+        }
+
+        $updatedBranding = array_merge($branding, [
+            'salon_name'      => $request->salon_name ?? $partner->shop_name,
+            'description'     => $request->description ?? '',
+            'credentials'     => $request->credentials ?? '',
+            'location'        => $request->location ?? '',
+            'contact_info'    => $request->contact_info ?? '',
+            'email'           => $request->email ?? '',
+            'facebook'        => $request->facebook ?? '',
+            'facebook_url'    => $request->facebook_url ?? '',
+            'instagram'       => $request->instagram ?? '',
+            'instagram_url'   => $request->instagram_url ?? '',
             'color_primary'   => $request->color_primary ?? '#064E3B',
             'color_secondary' => $request->color_secondary ?? '#7cbf7f',
+            'logo_path'       => $logoPath,
         ]);
 
-        $partner->update(['branding' => $branding]);
+        $partner->update(['branding' => $updatedBranding]);
         return back();
     })->name('admin.profile.update');
 
+    // Save/Update Service with 3 Photo Slots
     Route::post('/services', function (Request $request) {
         $adminId = session('admin_id');
+
+        $photos = $request->existing_photos ?? [];
+        if (!is_array($photos)) {
+            $photos = json_decode($photos, true) ?? [];
+        }
+
+        // Process up to 3 service slot uploads
+        for ($i = 1; $i <= 3; $i++) {
+            $fileKey = "service_photo_{$i}";
+            if ($request->hasFile($fileKey)) {
+                $path = $request->file($fileKey)->store("services/{$adminId}", 'public');
+                $photos[$i - 1] = Storage::url($path);
+            }
+        }
 
         if ($request->service_id) {
             $service = Service::where('_id', $request->service_id)
@@ -511,6 +389,7 @@ Route::prefix('admin')->group(function () {
                 'category'    => $request->category,
                 'rate'        => $request->rate,
                 'description' => $request->description,
+                'photos'      => array_values($photos),
             ]);
         } else {
             Service::create([
@@ -519,16 +398,160 @@ Route::prefix('admin')->group(function () {
                 'category'    => $request->category,
                 'rate'        => $request->rate,
                 'description' => $request->description,
-                'photos'      => [],
+                'photos'      => array_values($photos),
             ]);
         }
 
         return back();
     })->name('admin.services.save');
 
+    // Delete a single service
     Route::delete('/services/{id}', function ($id) {
         $adminId = session('admin_id');
         Service::where('_id', $id)->where('admin_id', $adminId)->delete();
         return back();
     })->name('admin.services.destroy');
+
+    // Delete Entire Account (Danger Zone)
+    Route::post('/delete-account', function () {
+        $adminId = session('admin_id');
+        if (!$adminId) return redirect()->route('login');
+
+        Partner::where('admin_id', $adminId)->delete();
+        Service::where('admin_id', $adminId)->delete();
+        Booking::where('admin_id', $adminId)->delete();
+
+        session()->invalidate();
+        session()->regenerateToken();
+
+        return redirect()->route('login');
+    })->name('admin.account.destroy');
+
+    // Bookings & Appointments Master Page
+    Route::get('/bookings', function () {
+        if (!session()->has('admin_id')) {
+            return redirect()->route('login');
+        }
+
+        $adminId = session('admin_id');
+        $partner = Partner::where('admin_id', $adminId)->first();
+        $bookings = Booking::where('admin_id', $adminId)->get();
+
+        $calendarAppts = [];
+        $pendingRequests = [];
+
+        foreach ($bookings as $doc) {
+            $dateRaw = $doc->selected_date ?? '';
+            try {
+                $dateKey = Carbon::parse($dateRaw)->format('Y-n-j');
+            } catch (\Throwable $e) {
+                $dateKey = Carbon::now()->format('Y-n-j');
+            }
+            
+            $status = strtolower($doc->status ?? 'pending');
+            $docId = (string) ($doc->_id ?? $doc->id);
+
+            // Cleanly format pending inquiries for the table with string IDs
+            if ($status === 'pending') {
+                $item = $doc->toArray();
+                $item['id'] = $docId;
+                $item['_id'] = $docId;
+                $pendingRequests[] = $item;
+            }
+
+            $calendarAppts[$dateKey][] = [
+                'id'      => $docId,
+                'title'   => $doc->service_name ?? 'Service',
+                'time'    => $doc->selected_time ?? '',
+                'date'    => $doc->selected_date ?? '',
+                'status'  => $status,
+                'name'    => trim(($doc->first_name ?? '') . ' ' . ($doc->last_name ?? '')),
+                'email'   => $doc->email ?? '',
+                'request' => $doc->special_requests ?? '',
+                'method'  => $doc->payment_method ?? ($doc->payment_strategy ?? 'N/A'),
+                'paid'    => number_format((float) ($doc->amount_paid ?? 0), 2),
+            ];
+        }
+
+        return Inertia::render('Admin/Bookings', [
+            'partner'         => $partner,
+            'appointments'    => $calendarAppts,
+            'pendingRequests' => $pendingRequests,
+        ]);
+    })->name('admin.bookings');
+
+    // Individual Booking Details Page (Handles MongoDB ObjectId and string IDs)
+    Route::get('/bookings/{id}', function ($id) {
+        if (!session()->has('admin_id')) {
+            return redirect()->route('login');
+        }
+
+        $adminId = session('admin_id');
+        $partner = Partner::where('admin_id', $adminId)->first();
+        $booking = null;
+
+        // 1. Query using MongoDB BSON ObjectId
+        try {
+            if (strlen($id) === 24 && ctype_xdigit($id)) {
+                $oid = new \MongoDB\BSON\ObjectId($id);
+                $booking = Booking::where('_id', $oid)->first();
+            }
+        } catch (\Throwable $e) {
+            $booking = null;
+        }
+
+        // 2. Fallback query using Eloquent find / string matching
+        if (!$booking) {
+            $booking = Booking::find($id) 
+                ?? Booking::where('_id', $id)->first() 
+                ?? Booking::where('id', $id)->first();
+        }
+
+        // 3. Fallback: load first booking for this partner if direct ID failed
+        if (!$booking) {
+            $booking = Booking::where('admin_id', $adminId)->first();
+        }
+
+        if (!$booking) {
+            abort(404, 'Booking not found');
+        }
+
+        $bookingData = $booking->toArray();
+        $bookingData['id'] = (string) ($booking->_id ?? $booking->id);
+        $bookingData['_id'] = (string) ($booking->_id ?? $booking->id);
+
+        return Inertia::render('Admin/ViewDetails', [
+            'partner' => $partner,
+            'booking' => $bookingData,
+        ]);
+    })->name('admin.bookings.detail');
+
+    // Update individual booking status
+    Route::post('/bookings/{id}/status', function (Request $request, $id) {
+        $adminId = session('admin_id');
+        $request->validate(['status' => 'required|string']);
+
+        $booking = null;
+        try {
+            if (strlen($id) === 24 && ctype_xdigit($id)) {
+                $oid = new \MongoDB\BSON\ObjectId($id);
+                $booking = Booking::where('_id', $oid)->first();
+            }
+        } catch (\Throwable $e) {
+            $booking = null;
+        }
+
+        if (!$booking) {
+            $booking = Booking::find($id) 
+                ?? Booking::where('_id', $id)->first() 
+                ?? Booking::where('id', $id)->first();
+        }
+
+        if ($booking) {
+            $booking->update(['status' => $request->status]);
+        }
+
+        return back();
+    })->name('admin.bookings.status');
 });
+

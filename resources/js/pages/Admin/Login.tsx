@@ -1,20 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Head, Link, useForm } from '@inertiajs/react';
 
 export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
-    const { data, setData, post, processing, errors } = useForm({
+    
+    // Persistent notice that stays visible while retyping
+    const [persistedNotice, setPersistedNotice] = useState<string | null>(null);
+
+    const { data, setData, post, processing, reset, errors: serverErrors } = useForm({
         admin_id: '',
         email: '',
         password: '',
     });
 
+    // Capture server-side authentication failure
+    useEffect(() => {
+        const authErr = (serverErrors as Record<string, string | undefined>).auth_failed;
+        if (authErr) {
+            setPersistedNotice(authErr);
+            reset(); // Clears all input fields so the user starts fresh
+        }
+    }, [serverErrors]);
+
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-        post('/login');
-    };
+        e.stopPropagation();
 
-    const authError = (errors as Record<string, string | undefined>).auth_failed;
+        // Local check for empty fields
+        if (!data.admin_id.trim() || !data.email.trim() || !data.password) {
+            setPersistedNotice('All fields are required. Please fill in your details.');
+            reset(); // Clear fields
+            return;
+        }
+
+        post('/login', {
+            preserveScroll: true,
+            preserveState: true,
+            onError: (err) => {
+                const message = (err as Record<string, string>).auth_failed || Object.values(err)[0];
+                if (message) {
+                    setPersistedNotice(message);
+                }
+                reset(); // Clear all typed inputs on error
+            },
+        });
+    };
 
     return (
         <div className="min-h-screen bg-[#FAFAFA] flex flex-col justify-between font-sans">
@@ -29,13 +59,15 @@ export default function Login() {
                     <h1 className="font-serif text-2xl text-[#2D4336] mb-1 font-bold">Welcome Back</h1>
                     <p className="text-xs text-stone-500 mb-6">Enter your details to access your portal.</p>
 
-                    {authError && (
-                        <div className="mb-4 p-2.5 bg-red-100 border border-red-200 text-red-700 text-xs rounded text-center">
-                            {authError}
+                    {/* Notice Box: Stays visible while retyping in the cleared fields */}
+                    {persistedNotice && (
+                        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-left">
+                            <p className="text-xs font-bold text-red-700 uppercase tracking-wider mb-1">Notice:</p>
+                            <p className="text-xs text-red-600">{persistedNotice}</p>
                         </div>
                     )}
 
-                    <form onSubmit={submit} className="text-left space-y-4">
+                    <form onSubmit={submit} noValidate autoComplete="off" className="text-left space-y-4">
                         <div>
                             <label className="block text-[10px] font-bold tracking-wider text-stone-600 mb-1">
                                 ADMIN-ID
@@ -45,12 +77,9 @@ export default function Login() {
                                 placeholder="DB-XXXX"
                                 value={data.admin_id}
                                 onChange={(e) => setData('admin_id', e.target.value)}
+                                autoComplete="off"
                                 className="w-full text-sm p-3 border border-stone-300 rounded focus:border-[#2D4336] outline-none text-black bg-white placeholder-stone-400"
-                                required
                             />
-                            {errors.admin_id && (
-                                <p className="text-red-500 text-xs mt-1">{errors.admin_id}</p>
-                            )}
                         </div>
 
                         <div>
@@ -62,12 +91,9 @@ export default function Login() {
                                 placeholder="admin@gmail.com"
                                 value={data.email}
                                 onChange={(e) => setData('email', e.target.value)}
+                                autoComplete="off"
                                 className="w-full text-sm p-3 border border-stone-300 rounded focus:border-[#2D4336] outline-none text-black bg-white placeholder-stone-400"
-                                required
                             />
-                            {errors.email && (
-                                <p className="text-red-500 text-xs mt-1">{errors.email}</p>
-                            )}
                         </div>
 
                         <div>
@@ -80,8 +106,8 @@ export default function Login() {
                                     placeholder="••••••••"
                                     value={data.password}
                                     onChange={(e) => setData('password', e.target.value)}
+                                    autoComplete="new-password"
                                     className="w-full text-sm p-3 border border-stone-300 rounded focus:border-[#2D4336] outline-none pr-12 text-black bg-white placeholder-stone-400"
-                                    required
                                 />
                                 <button
                                     type="button"
@@ -91,15 +117,12 @@ export default function Login() {
                                     {showPassword ? 'Hide' : 'Show'}
                                 </button>
                             </div>
-                            {errors.password && (
-                                <p className="text-red-500 text-xs mt-1">{errors.password}</p>
-                            )}
                         </div>
 
                         <button
                             type="submit"
                             disabled={processing}
-                            className="w-full bg-[#2D4336] hover:bg-[#1e2e25] text-white py-3 rounded text-xs font-bold tracking-wider uppercase transition mt-2 disabled:opacity-50"
+                            className="w-full bg-[#2D4336] hover:bg-[#1e2e25] text-white py-3 rounded text-xs font-bold tracking-wider uppercase transition mt-2 disabled:opacity-50 cursor-pointer"
                         >
                             {processing ? 'VERIFYING...' : 'SIGN IN'}
                         </button>
@@ -107,7 +130,7 @@ export default function Login() {
 
                     <p className="mt-6 text-xs text-stone-500">
                         New here?{' '}
-                        <Link href="/register" className="text-[#2D4336] font-bold underline">
+                        <Link href="/register" className="text-[#2D4336] font-bold underline hover:text-emerald-900">
                             Register
                         </Link>
                     </p>
