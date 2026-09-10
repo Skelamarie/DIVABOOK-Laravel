@@ -1,18 +1,24 @@
 import React, { useState } from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
+
+// Declaration for Ziggy route helper in TypeScript
+declare function route(name: string, params?: any): string;
 
 export default function Contact() {
     const [mobileNavOpen, setMobileNavOpen] = useState(false);
-    const [formData, setFormData] = useState({
-        name: '',
+
+    const { data, setData, post, processing, errors, reset, wasSuccessful } = useForm({
+        fullname: '',
         email: '',
-        category: '',
+        type: '',
         message: '',
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Handle inquiry submission logic
+        post(route('contact.send'), {
+            onSuccess: () => reset(),
+        });
     };
 
     return (
@@ -136,6 +142,12 @@ export default function Contact() {
                         Inquiry Form
                     </h2>
 
+                    {wasSuccessful && (
+                        <div className="p-4 mb-5 text-sm text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-lg">
+                            Your inquiry has been sent successfully!
+                        </div>
+                    )}
+
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
@@ -144,11 +156,16 @@ export default function Contact() {
                                 </label>
                                 <input
                                     type="text"
+                                    name="fullname"
                                     placeholder="Jane Doe"
-                                    value={formData.name}
-                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                    value={data.fullname}
+                                    onChange={(e) => setData('fullname', e.target.value)}
+                                    required
                                     className="w-full bg-stone-50 border border-stone-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-800 placeholder:text-stone-400"
                                 />
+                                {errors.fullname && (
+                                    <p className="text-red-500 text-xs mt-1">{errors.fullname}</p>
+                                )}
                             </div>
                             <div>
                                 <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-500 mb-2">
@@ -156,11 +173,16 @@ export default function Contact() {
                                 </label>
                                 <input
                                     type="email"
+                                    name="email"
                                     placeholder="jane@example.com"
-                                    value={formData.email}
-                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                    value={data.email}
+                                    onChange={(e) => setData('email', e.target.value)}
+                                    required
                                     className="w-full bg-stone-50 border border-stone-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-800 placeholder:text-stone-400"
                                 />
+                                {errors.email && (
+                                    <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+                                )}
                             </div>
                         </div>
 
@@ -169,15 +191,19 @@ export default function Contact() {
                                 INQUIRY TYPE
                             </label>
                             <select
-                                value={formData.category}
-                                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                                name="type"
+                                value={data.type}
+                                onChange={(e) => setData('type', e.target.value)}
+                                required
                                 className="w-full bg-stone-50 border border-stone-200 rounded-lg px-4 py-3 text-sm text-stone-700 focus:outline-none focus:ring-1 focus:ring-emerald-800"
                             >
-                                <option value="">Select a category</option>
-                                <option value="general">General Support</option>
-                                <option value="partnership">Business Partnership</option>
-                                <option value="booking">Booking Issues</option>
+                                <option value="" disabled>Select a category</option>
+                                <option value="General Support">General Support</option>
+                                <option value="Partnership Interest">Partnership Interest</option>
                             </select>
+                            {errors.type && (
+                                <p className="text-red-500 text-xs mt-1">{errors.type}</p>
+                            )}
                         </div>
 
                         <div>
@@ -186,18 +212,24 @@ export default function Contact() {
                             </label>
                             <textarea
                                 rows={4}
+                                name="message"
                                 placeholder="How can we assist you?"
-                                value={formData.message}
-                                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                                value={data.message}
+                                onChange={(e) => setData('message', e.target.value)}
+                                required
                                 className="w-full bg-stone-50 border border-stone-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-800 placeholder:text-stone-400"
                             ></textarea>
+                            {errors.message && (
+                                <p className="text-red-500 text-xs mt-1">{errors.message}</p>
+                            )}
                         </div>
 
                         <button
                             type="submit"
-                            className="w-full bg-[#274436] hover:bg-[#1d3329] text-white font-bold py-4 rounded-lg tracking-wider text-xs uppercase transition flex items-center justify-center gap-2"
+                            disabled={processing}
+                            className="w-full bg-[#274436] hover:bg-[#1d3329] disabled:opacity-50 text-white font-bold py-4 rounded-lg tracking-wider text-xs uppercase transition flex items-center justify-center gap-2"
                         >
-                            <span>SEND INQUIRY</span>
+                            <span>{processing ? 'SENDING...' : 'SEND INQUIRY'}</span>
                             <span className="text-base">✈</span>
                         </button>
                     </form>

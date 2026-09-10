@@ -51,7 +51,7 @@ Route::get('/', function () {
 
 // Contact Us Page
 Route::get('/contact', function () {
-    return Inertia::render('Contact');
+    return Inertia::render('Customer/Contact');
 })->name('contact');
 
 // General Services Catalog Page

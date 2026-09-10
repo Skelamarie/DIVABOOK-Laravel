@@ -87,22 +87,6 @@ export default function Registration() {
                 </span>
             </header>
 
-<<<<<<< HEAD
-            <main className="mx-auto my-8 w-full max-w-4xl flex-1 overflow-hidden rounded-lg border border-stone-200 bg-white p-6 shadow-sm sm:p-10">
-                <p className="mb-1 text-[10px] font-bold tracking-widest text-stone-400 uppercase">
-                    STEP 01 OF 02
-                </p>
-                <h1 className="mb-1 font-serif text-3xl font-bold text-[#2D4336]">
-                    Partner Registration
-                </h1>
-                <p className="mb-8 text-xs text-stone-500">
-                    Enter your business details to create your digital
-                    storefront.
-                </p>
-
-                <form onSubmit={submit} className="space-y-4">
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-=======
             <main className="flex-1 max-w-4xl w-full mx-auto my-8 bg-white border border-stone-200 rounded-lg shadow-sm overflow-hidden p-6 sm:p-10">
                 <p className="text-[10px] font-bold text-stone-400 tracking-widest uppercase mb-1">STEP 01 OF 02</p>
                 <h1 className="font-serif text-3xl font-bold text-[#2D4336] mb-1">Partner Registration</h1>
@@ -122,7 +106,6 @@ export default function Registration() {
 
                 <form onSubmit={submit} noValidate className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
->>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
                         <div>
                             <label className="mb-1 block text-[10px] font-bold tracking-wider text-stone-600">
                                 FULL NAME
@@ -131,18 +114,10 @@ export default function Registration() {
                                 type="text"
                                 placeholder="Jane Doe"
                                 value={data.name}
-<<<<<<< HEAD
-                                onChange={(e) =>
-                                    setData('name', e.target.value)
-                                }
-                                className="w-full rounded border border-stone-300 bg-white p-3 text-sm text-black placeholder-stone-400 outline-none focus:border-[#2D4336]"
-                                required
-=======
                                 onChange={(e) => handleFieldChange('name', e.target.value)}
                                 className={`w-full text-sm p-3 border rounded outline-none text-black bg-white placeholder-stone-400 focus:border-[#2D4336] ${
                                     allErrors.name ? 'border-red-500 bg-red-50/20' : 'border-stone-300'
                                 }`}
->>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
                             />
                             {allErrors.name && <p className="text-red-500 text-xs mt-1 font-medium">{allErrors.name}</p>}
                         </div>
@@ -155,18 +130,10 @@ export default function Registration() {
                                 type="text"
                                 placeholder="Lumina Wellness"
                                 value={data.shop_name}
-<<<<<<< HEAD
-                                onChange={(e) =>
-                                    setData('shop_name', e.target.value)
-                                }
-                                className="w-full rounded border border-stone-300 bg-white p-3 text-sm text-black placeholder-stone-400 outline-none focus:border-[#2D4336]"
-                                required
-=======
                                 onChange={(e) => handleFieldChange('shop_name', e.target.value)}
                                 className={`w-full text-sm p-3 border rounded outline-none text-black bg-white placeholder-stone-400 focus:border-[#2D4336] ${
                                     allErrors.shop_name ? 'border-red-500 bg-red-50/20' : 'border-stone-300'
                                 }`}
->>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
                             />
                             {allErrors.shop_name && <p className="text-red-500 text-xs mt-1 font-medium">{allErrors.shop_name}</p>}
                         </div>
@@ -181,26 +148,12 @@ export default function Registration() {
                                 type="email"
                                 placeholder="contact@business.com"
                                 value={data.email}
-<<<<<<< HEAD
-                                onChange={(e) =>
-                                    setData('email', e.target.value)
-                                }
-                                className="w-full rounded border border-stone-300 bg-white p-3 text-sm text-black placeholder-stone-400 outline-none focus:border-[#2D4336]"
-                                required
-                            />
-                            {errors.email && (
-                                <span className="text-xs text-red-500">
-                                    {errors.email}
-                                </span>
-                            )}
-=======
                                 onChange={(e) => handleFieldChange('email', e.target.value)}
                                 className={`w-full text-sm p-3 border rounded outline-none text-black bg-white placeholder-stone-400 focus:border-[#2D4336] ${
                                     allErrors.email ? 'border-red-500 bg-red-50/20' : 'border-stone-300'
                                 }`}
                             />
                             {allErrors.email && <p className="text-red-500 text-xs mt-1 font-medium">{allErrors.email}</p>}
->>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
                         </div>
 
                         <div>
@@ -212,20 +165,6 @@ export default function Registration() {
                                     type={showPassword ? 'text' : 'password'}
                                     placeholder="••••••••"
                                     value={data.password}
-<<<<<<< HEAD
-                                    onChange={(e) =>
-                                        setData('password', e.target.value)
-                                    }
-                                    className="w-full rounded border border-stone-300 bg-white p-3 pr-12 text-sm text-black placeholder-stone-400 outline-none focus:border-[#2D4336]"
-                                    required
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        setShowPassword(!showPassword)
-                                    }
-                                    className="absolute top-1/2 right-3 -translate-y-1/2 text-xs text-stone-500 hover:text-black"
-=======
                                     onChange={(e) => handleFieldChange('password', e.target.value)}
                                     className={`w-full text-sm p-3 border rounded outline-none pr-12 text-black bg-white placeholder-stone-400 focus:border-[#2D4336] ${
                                         allErrors.password ? 'border-red-500 bg-red-50/20' : 'border-stone-300'
@@ -235,7 +174,6 @@ export default function Registration() {
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
                                     className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-stone-500 hover:text-black select-none"
->>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
                                 >
                                     {showPassword ? 'Hide' : 'Show'}
                                 </button>
@@ -246,30 +184,16 @@ export default function Registration() {
 
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div>
-<<<<<<< HEAD
-                            <label className="mb-1 block text-[10px] font-bold tracking-wider text-stone-600">
-                                PHONE NUMBER
-                            </label>
-=======
                             <label className="block text-[10px] font-bold tracking-wider text-stone-600 mb-1">PHONE NUMBER (11 DIGITS)</label>
->>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
                             <input
                                 type="tel"
                                 maxLength={11}
                                 placeholder="09123456789"
                                 value={data.phone}
-<<<<<<< HEAD
-                                onChange={(e) =>
-                                    setData('phone', e.target.value)
-                                }
-                                className="w-full rounded border border-stone-300 bg-white p-3 text-sm text-black placeholder-stone-400 outline-none focus:border-[#2D4336]"
-                                required
-=======
                                 onChange={(e) => handleFieldChange('phone', e.target.value)}
                                 className={`w-full text-sm p-3 border rounded outline-none text-black bg-white placeholder-stone-400 focus:border-[#2D4336] ${
                                     allErrors.phone ? 'border-red-500 bg-red-50/20' : 'border-stone-300'
                                 }`}
->>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
                             />
                             {allErrors.phone && <p className="text-red-500 text-xs mt-1 font-medium">{allErrors.phone}</p>}
                         </div>
@@ -282,40 +206,15 @@ export default function Registration() {
                                 type="text"
                                 placeholder="123 Serenity Way, Suite 400"
                                 value={data.address}
-<<<<<<< HEAD
-                                onChange={(e) =>
-                                    setData('address', e.target.value)
-                                }
-                                className="w-full rounded border border-stone-300 bg-white p-3 text-sm text-black placeholder-stone-400 outline-none focus:border-[#2D4336]"
-                                required
-=======
                                 onChange={(e) => handleFieldChange('address', e.target.value)}
                                 className={`w-full text-sm p-3 border rounded outline-none text-black bg-white placeholder-stone-400 focus:border-[#2D4336] ${
                                     allErrors.address ? 'border-red-500 bg-red-50/20' : 'border-stone-300'
                                 }`}
->>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
                             />
                             {allErrors.address && <p className="text-red-500 text-xs mt-1 font-medium">{allErrors.address}</p>}
                         </div>
                     </div>
 
-<<<<<<< HEAD
-                    <div className="flex items-center gap-2 pt-2">
-                        <input
-                            type="checkbox"
-                            id="terms"
-                            checked={data.terms}
-                            onChange={(e) => setData('terms', e.target.checked)}
-                            className="rounded text-[#2D4336] focus:ring-[#2D4336]"
-                            required
-                        />
-                        <label
-                            htmlFor="terms"
-                            className="cursor-pointer text-xs text-stone-700"
-                        >
-                            I agree to the Partner Terms &amp; Privacy Policy.
-                        </label>
-=======
                     <div>
                         <div className="flex items-center gap-2 pt-2">
                             <input
@@ -330,7 +229,6 @@ export default function Registration() {
                             </label>
                         </div>
                         {allErrors.terms && <p className="text-red-500 text-xs mt-1 font-medium">{allErrors.terms}</p>}
->>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
                     </div>
 
                     <button
@@ -346,19 +244,9 @@ export default function Registration() {
 
                 <p className="mt-6 text-center text-xs text-stone-500">
                     Already have an account?{' '}
-<<<<<<< HEAD
-                    <Link
-                        href="/login"
-                        as="a"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                        }}
-                        className="cursor-pointer font-bold text-[#2D4336] underline hover:text-emerald-900"
-=======
                     <Link 
                         href="/login" 
                         className="text-[#2D4336] font-bold underline hover:text-emerald-900"
->>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
                     >
                         Log in
                     </Link>
