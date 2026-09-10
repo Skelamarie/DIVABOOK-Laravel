@@ -16,15 +16,6 @@ interface Appointment {
     paid?: string | number;
 }
 
-<<<<<<< HEAD
-export default function Bookings({
-    partner,
-    appointments = {},
-    pendingRequests = [],
-}: Props) {
-    const [viewMode, setViewMode] = useState<'week' | 'month'>('week');
-    const [selectedAppt, setSelectedAppt] = useState<any | null>(null);
-=======
 interface PendingRequest {
     _id: string;
     id?: string;
@@ -59,7 +50,6 @@ export default function Bookings({ partner, appointments = {}, pendingRequests =
     const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('week');
     const [currentDate, setCurrentDate] = useState<Date>(new Date());
     const [selectedAppt, setSelectedAppt] = useState<Appointment | null>(null);
->>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
 
     const updateStatus = (id: string, newStatus: string) => {
         router.post(`/admin/bookings/${id}/status`, { status: newStatus });
@@ -218,70 +208,18 @@ export default function Bookings({ partner, appointments = {}, pendingRequests =
     return (
         <div className="min-h-screen bg-[#faf9f6] pt-[80px] font-sans text-stone-800">
             <Head title="Bookings & Appointments - Admin" />
-<<<<<<< HEAD
-            <AdminNavbar
-                active="bookings"
-                salonName={partner?.branding?.salon_name || partner?.shop_name}
-                adminId={partner?.admin_id}
-            />
-
-            <main className="mx-auto max-w-7xl space-y-8 px-6 py-8">
-                <div className="flex flex-col justify-between gap-4 border-b border-stone-200 pb-4 md:flex-row md:items-center">
-=======
             <AdminNavbar active="bookings" adminId={partner?.admin_id} />
 
             <main className="max-w-7xl mx-auto px-6 py-8 space-y-8">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-stone-200 pb-4">
->>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
                     <div>
                         <h1 className="font-serif text-3xl font-bold text-stone-900">
                             Booking &amp; Appointment
                         </h1>
                         <p className="text-xs text-stone-500">
-                            Manage your appointment calendar and customer
-                            inquiries.
+                            Manage your appointment calendar and customer inquiries.
                         </p>
                     </div>
-<<<<<<< HEAD
-                    <div className="flex rounded-lg bg-stone-200 p-1">
-                        <button
-                            onClick={() => setViewMode('week')}
-                            className={`rounded px-4 py-1 text-xs font-bold ${viewMode === 'week' ? 'bg-white text-stone-900 shadow' : 'text-stone-600'}`}
-                        >
-                            Week View
-                        </button>
-                        <button
-                            onClick={() => setViewMode('month')}
-                            className={`rounded px-4 py-1 text-xs font-bold ${viewMode === 'month' ? 'bg-white text-stone-900 shadow' : 'text-stone-600'}`}
-                        >
-                            Month View
-                        </button>
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-                    {/* Calendar Area */}
-                    <div className="rounded-xl border border-stone-200 bg-white p-5 shadow-sm lg:col-span-8">
-                        <h2 className="mb-4 text-sm font-bold tracking-wider text-[#064E3B] uppercase">
-                            Active Schedule ({viewMode.toUpperCase()})
-                        </h2>
-
-                        <div className="grid min-h-[350px] grid-cols-7 gap-2 rounded-lg border border-stone-200 bg-stone-50 p-3">
-                            {[
-                                'Mon',
-                                'Tue',
-                                'Wed',
-                                'Thu',
-                                'Fri',
-                                'Sat',
-                                'Sun',
-                            ].map((day) => (
-                                <div
-                                    key={day}
-                                    className="py-1 text-center text-xs font-bold text-stone-400"
-                                >
-                                    {day}
-=======
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -326,50 +264,10 @@ export default function Bookings({ partner, appointments = {}, pendingRequests =
                                     >
                                         &rsaquo;
                                     </button>
->>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
                                 </div>
                             </div>
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-                            {/* Calendar Days Simulation */}
-                            {Array.from({ length: 14 }).map((_, i) => {
-                                const dayNum = i + 1;
-                                return (
-                                    <div
-                                        key={i}
-                                        className="flex min-h-[70px] flex-col justify-between rounded border border-stone-100 bg-white p-1.5"
-                                    >
-                                        <span className="text-[10px] font-bold text-stone-400">
-                                            {dayNum}
-                                        </span>
-                                        {i === 2 && (
-                                            <div
-                                                onClick={() =>
-                                                    setSelectedAppt({
-                                                        name: 'Maria Santos',
-                                                        email: 'maria@example.com',
-                                                        title: 'Gel Nails',
-                                                        date: 'September 3, 2026',
-                                                        time: '10:00 AM',
-                                                        method: 'GCASH',
-                                                        paid: '1,200.00',
-                                                        request:
-                                                            'Please be gentle on cuticles',
-                                                    })
-                                                }
-                                                className="cursor-pointer truncate rounded bg-emerald-100 p-1 text-[9px] font-bold text-emerald-800"
-                                            >
-                                                Maria: Gel Nails
-                                            </div>
-                                        )}
-                                    </div>
-                                );
-                            })}
-=======
                             {/* View Switchers */}
->>>>>>> 33ab5ff544701f1538fbe5808b17028254537e67
                             <div className="flex bg-stone-100 p-1 rounded-lg border border-stone-200">
                                 <button
                                     type="button"
@@ -393,7 +291,6 @@ export default function Bookings({ partner, appointments = {}, pendingRequests =
                                     Month
                                 </button>
                             </div>
->>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
                         </div>
 
                         {(viewMode === 'day' || viewMode === 'week') && (
@@ -502,18 +399,7 @@ export default function Bookings({ partner, appointments = {}, pendingRequests =
                         )}
                     </div>
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
                     {/* Client Information Inspector Card */}
-                    <aside className="flex flex-col justify-between rounded-xl border border-stone-200 bg-white p-6 shadow-sm lg:col-span-4">
-                        <div>
-                            <h3 className="mb-4 border-b border-stone-100 pb-2 text-xs font-bold tracking-wider text-stone-400 uppercase">
-                                Client Details
-                            </h3>
-=======
-                    {/* Client Information Sidebar Inspector Card */}
->>>>>>> 33ab5ff544701f1538fbe5808b17028254537e67
                     <aside className="lg:col-span-4 bg-white border border-stone-200 rounded-xl p-6 shadow-sm flex flex-col justify-between h-fit">
                         <div>
                             <div className="flex items-center justify-between border-b border-stone-100 pb-3 mb-4">
@@ -526,98 +412,42 @@ export default function Bookings({ partner, appointments = {}, pendingRequests =
                             <div className="text-[10px] uppercase font-bold tracking-wider text-stone-400 mb-2">
                                 Client Information
                             </div>
->>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
 
                             {selectedAppt ? (
                                 <div className="space-y-4 text-xs bg-stone-50/50 p-4 rounded-lg border border-stone-100">
                                     <div>
-<<<<<<< HEAD
-                                        <span className="text-[9px] font-bold text-stone-400 uppercase">
-                                            Customer
-                                        </span>
-                                        <p className="text-sm font-bold text-stone-800">
-                                            {selectedAppt.name}
-                                        </p>
-                                        <p className="text-stone-500">
-                                            {selectedAppt.email}
-                                        </p>
-=======
                                         <span className="text-stone-400 font-bold uppercase text-[9px] block">Customer</span>
                                         <p className="font-bold text-sm text-stone-800">{selectedAppt.name}</p>
                                         <p className="text-stone-500">{selectedAppt.email}</p>
->>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
                                     </div>
                                     <hr className="border-stone-200" />
                                     <div>
-<<<<<<< HEAD
-                                        <span className="text-[9px] font-bold text-stone-400 uppercase">
-                                            Schedule
-                                        </span>
-                                        <p className="font-bold text-stone-800">
-                                            {selectedAppt.title}
-                                        </p>
-                                        <p className="text-stone-600">
-                                            {selectedAppt.date} @{' '}
-                                            {selectedAppt.time}
-                                        </p>
-=======
                                         <span className="text-stone-400 font-bold uppercase text-[9px] block">Schedule Details</span>
                                         <p className="font-bold text-stone-800">{selectedAppt.title}</p>
                                         <p className="text-stone-600">{selectedAppt.date} @ {selectedAppt.time}</p>
->>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
                                     </div>
                                     <hr className="border-stone-200" />
                                     <div>
-<<<<<<< HEAD
-                                        <span className="text-[9px] font-bold text-stone-400 uppercase">
-                                            Payment &amp; Strategy
-                                        </span>
-                                        <p className="font-semibold text-stone-700">
-                                            {selectedAppt.method} (₱
-                                            {selectedAppt.paid})
-                                        </p>
-                                        <p className="mt-1 rounded bg-stone-50 p-2 text-stone-500 italic">
-                                            &quot;
-                                            {selectedAppt.request || 'None'}
-                                            &quot;
-=======
                                         <span className="text-stone-400 font-bold uppercase text-[9px] block">Payment &amp; Strategy</span>
                                         <p className="text-stone-700 font-semibold">{selectedAppt.method?.toUpperCase()} (₱{selectedAppt.paid})</p>
                                         <p className="italic text-stone-500 mt-2 bg-white border border-stone-200 p-2 rounded">
                                             &quot;{selectedAppt.request || 'None'}&quot;
->>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
                                         </p>
                                     </div>
                                 </div>
                             ) : (
-<<<<<<< HEAD
-                                <div className="py-16 text-center text-xs text-stone-400">
-                                    Click any slot on the calendar to view full
-                                    customer details.
-=======
                                 <div className="bg-stone-50 border border-stone-100 rounded-lg py-12 px-4 text-center text-stone-400 text-xs">
                                     Select a schedule to view client details
->>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
                                 </div>
                             )}
                         </div>
                     </aside>
                 </div>
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-                {/* Table of Inquiries */}
-                <div className="overflow-hidden rounded-xl border border-stone-200 bg-white shadow-sm">
-                    <div className="flex items-center justify-between border-b border-stone-200 p-4">
-                        <h3 className="text-xs font-bold tracking-wider text-stone-800 uppercase">
-=======
                 {/* Table of Recent Service Inquiries */}
->>>>>>> 33ab5ff544701f1538fbe5808b17028254537e67
                 <div className="bg-white border border-stone-200 rounded-xl shadow-sm overflow-hidden">
                     <div className="p-4 border-b border-stone-200 flex justify-between items-center">
                         <h3 className="font-bold text-xs uppercase tracking-wider text-stone-800">
->>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
                             Recent Service Inquiries ({pendingRequests.length})
                         </h3>
                     </div>
@@ -644,9 +474,8 @@ export default function Bookings({ partner, appointments = {}, pendingRequests =
                                         </td>
                                     </tr>
                                 ) : (
-<<<<<<< HEAD
                                     pendingRequests.map((req, idx) => {
-                                      const reqId = (req._id || req.id || String(idx)).toString();
+                                        const reqId = (req._id || req.id || String(idx)).toString();
                                         return (
                                             <tr key={`req-row-${reqId}`} className="hover:bg-stone-50">
                                                 <td className="p-3 font-bold text-stone-800">
@@ -682,74 +511,6 @@ export default function Bookings({ partner, appointments = {}, pendingRequests =
                                             </tr>
                                         );
                                     })
-=======
-                                    pendingRequests.map((req) => (
-                                        <tr
-                                            key={req._id}
-                                            className="hover:bg-stone-50"
-                                        >
-                                            <td className="p-3 font-bold text-stone-800">
-                                                {req.first_name} {req.last_name}
-                                                <span className="block text-[10px] font-normal text-stone-400">
-                                                    {req.email}
-                                                </span>
-                                            </td>
-<<<<<<< HEAD
-                                            <td className="p-3">
-                                                {req.service_name}
-                                            </td>
-                                            <td className="p-3 text-stone-500">
-                                                {req.selected_date} •{' '}
-                                                {req.selected_time}
-                                            </td>
-                                            <td className="p-3 font-bold">
-                                                ₱{req.amount_paid}
-                                            </td>
-                                            <td className="p-3">
-                                                <span className="rounded bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800 uppercase">
-                                                    {req.status}
-                                                </span>
-                                            </td>
-                                            <td className="space-x-2 p-3 text-right">
-=======
-                                            <td className="p-3">{req.service_name || 'Service'}</td>
-                                            <td className="p-3 text-stone-500">{req.selected_date} • {req.selected_time}</td>
-                                            <td className="p-3 capitalize text-stone-600">{req.payment_strategy || 'N/A'}</td>
-                                            <td className="p-3 font-bold">₱{Number(req.amount_paid || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
-                                            <td className="p-3 text-right space-x-2">
->>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
-                                                <button
-                                                    onClick={() =>
-                                                        updateStatus(
-                                                            req._id,
-                                                            'approved',
-                                                        )
-                                                    }
-                                                    className="rounded bg-[#064E3B] px-3 py-1 text-[10px] font-bold text-white hover:bg-[#043d2e]"
-                                                >
-                                                    Approve
-                                                </button>
-                                                <button
-                                                    onClick={() =>
-                                                        updateStatus(
-                                                            req._id,
-                                                            'declined',
-                                                        )
-                                                    }
-                                                    className="rounded bg-red-100 px-3 py-1 text-[10px] font-bold text-red-700 hover:bg-red-200"
-                                                >
-                                                    Decline
-                                                </button>
-                                                <Link
-                                                    href={`/admin/bookings/${req._id}`}
-                                                    className="px-2 py-1 text-[10px] font-bold text-stone-500 underline hover:text-stone-800"
-                                                >
-                                                    Details
-                                                </Link>
-                                            </td>
-                                        </tr>
-                                    ))
->>>>>>> 33ab5ff544701f1538fbe5808b17028254537e67
                                 )}
                             </tbody>
                         </table>
