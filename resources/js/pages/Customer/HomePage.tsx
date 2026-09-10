@@ -19,15 +19,22 @@ interface HomePageProps {
     };
 }
 
-export default function HomePage({ recommended = [], catalogCategories }: HomePageProps) {
+export default function HomePage({
+    recommended = [],
+    catalogCategories,
+}: HomePageProps) {
     const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
     return (
-        <div className="min-h-screen bg-white text-[#0C0A09] font-sans flex flex-col">
+        <div className="flex min-h-screen flex-col bg-white font-sans text-[#0C0A09]">
             <Head>
                 <title>DivaBook | Premium Beauty Booking</title>
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
-                <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+                <link
+                    rel="preconnect"
+                    href="https://fonts.gstatic.com"
+                    crossOrigin="anonymous"
+                />
                 <link
                     href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;1,400;1,600&family=Inter:wght@400;500;700&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap"
                     rel="stylesheet"
@@ -35,24 +42,41 @@ export default function HomePage({ recommended = [], catalogCategories }: HomePa
             </Head>
 
             {/* --- TOP NAVIGATION BAR --- */}
-            <nav className="sticky top-0 z-50 flex items-center justify-between px-[5%] py-[25px] bg-[#14532d] text-white">
-                <div className="hidden md:flex items-center gap-[30px] text-[13px] tracking-[1.5px]">
-                    <Link href="/" className="font-bold border-b-2 border-white pb-0.5">
+            <nav className="sticky top-0 z-50 flex items-center justify-between bg-[#14532d] px-[5%] py-[25px] text-white">
+                <div className="hidden items-center gap-[30px] text-[13px] tracking-[1.5px] md:flex">
+                    <Link
+                        href="/"
+                        className="border-b-2 border-white pb-0.5 font-bold"
+                    >
                         HOME
                     </Link>
-                    <Link href="/services" className="hover:text-emerald-200 transition">
+                    <Link
+                        href="/services"
+                        className="transition hover:text-emerald-200"
+                    >
                         SERVICES
                     </Link>
                 </div>
 
                 <div className="text-center md:absolute md:left-1/2 md:-translate-x-1/2">
-                    <Link href="/" className="font-['Crimson_Pro'] italic text-[32px] tracking-[2px] text-[#F9F8F6]">
+                    <Link
+                        href="/"
+                        className="font-['Crimson_Pro'] text-[32px] tracking-[2px] text-[#F9F8F6] italic"
+                    >
                         DIVABOOK
                     </Link>
                 </div>
 
+<<<<<<< HEAD
+                <div className="hidden items-center gap-[30px] text-[13px] tracking-[1.5px] md:flex">
+                    <Link
+                        href="/contact"
+                        className="transition hover:text-emerald-200"
+                    >
+=======
                 <div className="hidden md:flex items-center gap-[30px] text-[13px] tracking-[1.5px]">
                     <Link href="/contact" className="hover:text-emerald-200 transition uppercase">
+>>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
                         CONTACT US
                     </Link>
                     <button 
@@ -67,7 +91,7 @@ export default function HomePage({ recommended = [], catalogCategories }: HomePa
                 {/* Mobile Hamburger Button */}
                 <button
                     onClick={() => setMobileNavOpen(true)}
-                    className="md:hidden flex flex-col justify-between w-6 h-4 cursor-pointer focus:outline-none"
+                    className="flex h-4 w-6 cursor-pointer flex-col justify-between focus:outline-none md:hidden"
                     aria-label="Toggle navigation"
                 >
                     <span className="block h-[2px] w-full bg-white transition"></span>
@@ -77,7 +101,7 @@ export default function HomePage({ recommended = [], catalogCategories }: HomePa
 
                 {/* Mobile Sidebar */}
                 <div
-                    className={`fixed top-0 right-0 h-screen w-4/5 max-w-[300px] bg-[#F9F8F6] text-[#44403C] p-10 flex flex-col gap-6 shadow-2xl z-50 transition-transform duration-300 ${
+                    className={`fixed top-0 right-0 z-50 flex h-screen w-4/5 max-w-[300px] flex-col gap-6 bg-[#F9F8F6] p-10 text-[#44403C] shadow-2xl transition-transform duration-300 ${
                         mobileNavOpen ? 'translate-x-0' : 'translate-x-full'
                     }`}
                 >
@@ -88,23 +112,38 @@ export default function HomePage({ recommended = [], catalogCategories }: HomePa
                     >
                         ✕
                     </button>
+<<<<<<< HEAD
+                    <Link
+                        href="/"
+=======
                     <Link 
                         href="/" 
                         onClick={() => setMobileNavOpen(false)}
+>>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
                         className="text-lg font-medium tracking-[1.5px] text-[#064E3B]"
                     >
                         HOME
                     </Link>
+<<<<<<< HEAD
+                    <Link
+                        href="/services"
+=======
                     <Link 
                         href="/services" 
                         onClick={() => setMobileNavOpen(false)}
+>>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
                         className="text-lg font-medium tracking-[1.5px] hover:text-[#064E3B]"
                     >
                         SERVICES
                     </Link>
+<<<<<<< HEAD
+                    <Link
+                        href="/contact"
+=======
                     <Link 
                         href="/contact" 
                         onClick={() => setMobileNavOpen(false)}
+>>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
                         className="text-lg font-medium tracking-[1.5px] hover:text-[#064E3B]"
                     >
                         CONTACT US
@@ -113,22 +152,25 @@ export default function HomePage({ recommended = [], catalogCategories }: HomePa
             </nav>
 
             {/* --- HERO SECTION --- */}
-            <header className="text-center py-24 px-[10%]">
-                <p className="text-xs uppercase tracking-[3px] font-semibold text-[#78716C] mb-3">
+            <header className="px-[10%] py-24 text-center">
+                <p className="mb-3 text-xs font-semibold tracking-[3px] text-[#78716C] uppercase">
                     ESTABLISHED EXCELLENCE
                 </p>
-                <h1 className="font-['Noto_Serif'] text-5xl md:text-[64px] font-normal leading-[1.1] text-[#0C0A09]">
+                <h1 className="font-['Noto_Serif'] text-5xl leading-[1.1] font-normal text-[#0C0A09] md:text-[64px]">
                     Elevate Your <br />
-                    <i className="font-['Crimson_Pro'] italic font-normal">Self-Care Ritual</i>
+                    <i className="font-['Crimson_Pro'] font-normal italic">
+                        Self-Care Ritual
+                    </i>
                 </h1>
-                <hr className="w-20 border-t border-[#0C0A09] mx-auto my-6" />
-                <p className="text-base sm:text-lg text-[#44403C] max-w-xl mx-auto leading-relaxed">
-                    Experience curated beauty and wellness in the most exclusive service providers across the city.
+                <hr className="mx-auto my-6 w-20 border-t border-[#0C0A09]" />
+                <p className="mx-auto max-w-xl text-base leading-relaxed text-[#44403C] sm:text-lg">
+                    Experience curated beauty and wellness in the most exclusive
+                    service providers across the city.
                 </p>
                 <div className="mt-8">
                     <Link
                         href="/services"
-                        className="inline-block bg-[#1C1917] hover:bg-[#064E3B] text-white px-11 py-4 text-xs tracking-[2px] font-semibold uppercase transition-all duration-300 hover:tracking-[3px]"
+                        className="inline-block bg-[#1C1917] px-11 py-4 text-xs font-semibold tracking-[2px] text-white uppercase transition-all duration-300 hover:bg-[#064E3B] hover:tracking-[3px]"
                     >
                         EXPLORE SERVICES
                     </Link>
@@ -136,30 +178,37 @@ export default function HomePage({ recommended = [], catalogCategories }: HomePa
             </header>
 
             {/* --- CATALOG GRID (MOSAIC LAYOUT) --- */}
-            <section id="services" className="max-w-[1400px] mx-auto w-full px-[5%] py-12">
-                <div className="grid grid-cols-1 md:grid-cols-5 gap-5">
+            <section
+                id="services"
+                className="mx-auto w-full max-w-[1400px] px-[5%] py-12"
+            >
+                <div className="grid grid-cols-1 gap-5 md:grid-cols-5">
                     {/* Haircut Card */}
                     <Link
                         href="/services?category=hair"
-                        className="md:col-span-2 h-[420px] rounded-[32px] overflow-hidden relative flex items-end group shadow-sm hover:shadow-xl transition-all duration-500 bg-stone-900"
+                        className="group relative flex h-[420px] items-end overflow-hidden rounded-[32px] bg-stone-900 shadow-sm transition-all duration-500 hover:shadow-xl md:col-span-2"
                         style={{
                             backgroundImage: "url('/img/image1.png')",
                             backgroundSize: 'cover',
                             backgroundPosition: 'center',
                         }}
                     >
-                        <div className="w-full p-8 bg-gradient-to-t from-black/80 via-black/40 to-transparent text-white">
+                        <div className="w-full bg-gradient-to-t from-black/80 via-black/40 to-transparent p-8 text-white">
                             <div className="mb-2">
-                                <span className="bg-[#D2E9C7] text-[#384C33] text-[11px] font-bold px-3 py-1 rounded-full mr-2">
+                                <span className="mr-2 rounded-full bg-[#D2E9C7] px-3 py-1 text-[11px] font-bold text-[#384C33]">
                                     Styling
                                 </span>
-                                <span className="bg-[#D2E9C7] text-[#384C33] text-[11px] font-bold px-3 py-1 rounded-full">
+                                <span className="rounded-full bg-[#D2E9C7] px-3 py-1 text-[11px] font-bold text-[#384C33]">
                                     Coloring
                                 </span>
                             </div>
-                            <h3 className="font-['Noto_Serif'] text-2xl font-bold">Haircut &amp; Styling</h3>
-                            <p className="text-xs text-stone-200 mt-2 line-clamp-2">
-                                Precision cuts and bespoke coloring treatments tailored to your unique profile and aesthetic goals.
+                            <h3 className="font-['Noto_Serif'] text-2xl font-bold">
+                                Haircut &amp; Styling
+                            </h3>
+                            <p className="mt-2 line-clamp-2 text-xs text-stone-200">
+                                Precision cuts and bespoke coloring treatments
+                                tailored to your unique profile and aesthetic
+                                goals.
                             </p>
                         </div>
                     </Link>
@@ -167,25 +216,28 @@ export default function HomePage({ recommended = [], catalogCategories }: HomePa
                     {/* Nail Artistry Card */}
                     <Link
                         href="/services?category=nails"
-                        className="md:col-span-3 h-[420px] rounded-[32px] overflow-hidden relative flex items-end group shadow-sm hover:shadow-xl transition-all duration-500 bg-stone-900"
+                        className="group relative flex h-[420px] items-end overflow-hidden rounded-[32px] bg-stone-900 shadow-sm transition-all duration-500 hover:shadow-xl md:col-span-3"
                         style={{
                             backgroundImage: "url('/img/image2.png')",
                             backgroundSize: 'cover',
                             backgroundPosition: 'center',
                         }}
                     >
-                        <div className="w-full p-8 bg-gradient-to-t from-black/80 via-black/40 to-transparent text-white">
+                        <div className="w-full bg-gradient-to-t from-black/80 via-black/40 to-transparent p-8 text-white">
                             <div className="mb-2">
-                                <span className="bg-[#D2E9C7] text-[#384C33] text-[11px] font-bold px-3 py-1 rounded-full mr-2">
+                                <span className="mr-2 rounded-full bg-[#D2E9C7] px-3 py-1 text-[11px] font-bold text-[#384C33]">
                                     Manicures
                                 </span>
-                                <span className="bg-[#D2E9C7] text-[#384C33] text-[11px] font-bold px-3 py-1 rounded-full">
+                                <span className="rounded-full bg-[#D2E9C7] px-3 py-1 text-[11px] font-bold text-[#384C33]">
                                     Extensions
                                 </span>
                             </div>
-                            <h3 className="font-['Noto_Serif'] text-2xl font-bold">Nail Artistry</h3>
-                            <p className="text-xs text-stone-200 mt-2 line-clamp-2">
-                                Advanced manicures, pedicures, and custom extensions using premium products.
+                            <h3 className="font-['Noto_Serif'] text-2xl font-bold">
+                                Nail Artistry
+                            </h3>
+                            <p className="mt-2 line-clamp-2 text-xs text-stone-200">
+                                Advanced manicures, pedicures, and custom
+                                extensions using premium products.
                             </p>
                         </div>
                     </Link>
@@ -193,17 +245,20 @@ export default function HomePage({ recommended = [], catalogCategories }: HomePa
                     {/* Makeup Card */}
                     <Link
                         href="/services?category=makeup"
-                        className="md:col-span-3 h-[420px] rounded-[32px] overflow-hidden relative flex items-end group shadow-sm hover:shadow-xl transition-all duration-500 bg-stone-900"
+                        className="group relative flex h-[420px] items-end overflow-hidden rounded-[32px] bg-stone-900 shadow-sm transition-all duration-500 hover:shadow-xl md:col-span-3"
                         style={{
                             backgroundImage: "url('/img/image3.png')",
                             backgroundSize: 'cover',
                             backgroundPosition: 'center',
                         }}
                     >
-                        <div className="w-full p-8 bg-gradient-to-t from-black/80 via-black/40 to-transparent text-white">
-                            <h3 className="font-['Noto_Serif'] text-2xl font-bold">Professional Makeup</h3>
-                            <p className="text-xs text-stone-200 mt-2 line-clamp-2">
-                                From bridal elegance to editorial glam, our artists craft the perfect look for any occasion.
+                        <div className="w-full bg-gradient-to-t from-black/80 via-black/40 to-transparent p-8 text-white">
+                            <h3 className="font-['Noto_Serif'] text-2xl font-bold">
+                                Professional Makeup
+                            </h3>
+                            <p className="mt-2 line-clamp-2 text-xs text-stone-200">
+                                From bridal elegance to editorial glam, our
+                                artists craft the perfect look for any occasion.
                             </p>
                         </div>
                     </Link>
@@ -211,25 +266,28 @@ export default function HomePage({ recommended = [], catalogCategories }: HomePa
                     {/* Spa Card */}
                     <Link
                         href="/services?category=spa"
-                        className="md:col-span-2 h-[420px] rounded-[32px] overflow-hidden relative flex items-end group shadow-sm hover:shadow-xl transition-all duration-500 bg-stone-900"
+                        className="group relative flex h-[420px] items-end overflow-hidden rounded-[32px] bg-stone-900 shadow-sm transition-all duration-500 hover:shadow-xl md:col-span-2"
                         style={{
                             backgroundImage: "url('/img/image4.png')",
                             backgroundSize: 'cover',
                             backgroundPosition: 'center',
                         }}
                     >
-                        <div className="w-full p-8 bg-gradient-to-t from-black/80 via-black/40 to-transparent text-white">
+                        <div className="w-full bg-gradient-to-t from-black/80 via-black/40 to-transparent p-8 text-white">
                             <div className="mb-2">
-                                <span className="bg-[#D2E9C7] text-[#384C33] text-[11px] font-bold px-3 py-1 rounded-full mr-2">
+                                <span className="mr-2 rounded-full bg-[#D2E9C7] px-3 py-1 text-[11px] font-bold text-[#384C33]">
                                     Relaxation
                                 </span>
-                                <span className="bg-[#D2E9C7] text-[#384C33] text-[11px] font-bold px-3 py-1 rounded-full">
+                                <span className="rounded-full bg-[#D2E9C7] px-3 py-1 text-[11px] font-bold text-[#384C33]">
                                     Skin Health
                                 </span>
                             </div>
-                            <h3 className="font-['Noto_Serif'] text-2xl font-bold">Spa &amp; Wellness</h3>
-                            <p className="text-xs text-stone-200 mt-2 line-clamp-2">
-                                Immersive massages and rejuvenating facials that restore balance to both body and mind.
+                            <h3 className="font-['Noto_Serif'] text-2xl font-bold">
+                                Spa &amp; Wellness
+                            </h3>
+                            <p className="mt-2 line-clamp-2 text-xs text-stone-200">
+                                Immersive massages and rejuvenating facials that
+                                restore balance to both body and mind.
                             </p>
                         </div>
                     </Link>
@@ -237,124 +295,162 @@ export default function HomePage({ recommended = [], catalogCategories }: HomePa
             </section>
 
             {/* --- RECOMMENDED SERVICE PROVIDERS --- */}
-            <section className="bg-[#D9D9D9] py-20 px-[5%] mt-12">
-                <div className="max-w-[1400px] mx-auto">
-                    <div className="flex flex-col md:flex-row justify-between md:items-end mb-12">
+            <section className="mt-12 bg-[#D9D9D9] px-[5%] py-20">
+                <div className="mx-auto max-w-[1400px]">
+                    <div className="mb-12 flex flex-col justify-between md:flex-row md:items-end">
                         <div>
-                            <p className="text-xs uppercase tracking-widest text-[#064E3B] font-bold">OFFICIAL PARTNERS</p>
-                            <h2 className="font-['Noto_Serif'] text-[#064E3B] text-4xl sm:text-5xl mt-1">
-                                Our Service <br />Providers
+                            <p className="text-xs font-bold tracking-widest text-[#064E3B] uppercase">
+                                OFFICIAL PARTNERS
+                            </p>
+                            <h2 className="mt-1 font-['Noto_Serif'] text-4xl text-[#064E3B] sm:text-5xl">
+                                Our Service <br />
+                                Providers
                             </h2>
                         </div>
                         <Link
                             href="/services"
-                            className="text-[#064E3B] text-xs font-bold tracking-widest uppercase border-b border-[#064E3B] hover:text-[#0C0A09] hover:border-[#0C0A09] transition pb-1 mt-4 md:mt-0"
+                            className="mt-4 border-b border-[#064E3B] pb-1 text-xs font-bold tracking-widest text-[#064E3B] uppercase transition hover:border-[#0C0A09] hover:text-[#0C0A09] md:mt-0"
                         >
                             VIEW ALL SERVICE PROVIDERS
                         </Link>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
                         {recommended.length > 0 ? (
                             recommended.map((partner) => (
                                 <div
                                     key={partner.id}
-                                    className="bg-white rounded-lg p-6 flex flex-col justify-between shadow-sm hover:-translate-y-1 transition duration-300"
+                                    className="flex flex-col justify-between rounded-lg bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1"
                                 >
                                     <div>
-                                        <div className="w-full h-[320px] bg-[#F5F5F4] rounded overflow-hidden flex items-center justify-center mb-4">
+                                        <div className="mb-4 flex h-[320px] w-full items-center justify-center overflow-hidden rounded bg-[#F5F5F4]">
                                             {partner.logo ? (
                                                 <img
                                                     src={partner.logo}
                                                     alt={partner.name}
-                                                    className="w-full h-full object-cover object-center"
+                                                    className="h-full w-full object-cover object-center"
                                                 />
                                             ) : (
-                                                <div className="text-center text-[#A8A29E] text-xs uppercase tracking-wider font-semibold">
+                                                <div className="text-center text-xs font-semibold tracking-wider text-[#A8A29E] uppercase">
                                                     Business Logo
                                                     <br />
                                                     Unavailable
                                                 </div>
                                             )}
                                         </div>
-                                        <h3 className="font-['Noto_Serif'] text-xl font-bold text-[#0C0A09]">{partner.name}</h3>
-                                        <div className="flex items-center gap-1 text-xs mb-3 mt-1">
-                                            <span className="text-[#d4af37]">★★★★★</span>
-                                            <span className="text-[#78716C] font-semibold">(5.0)</span>
+                                        <h3 className="font-['Noto_Serif'] text-xl font-bold text-[#0C0A09]">
+                                            {partner.name}
+                                        </h3>
+                                        <div className="mt-1 mb-3 flex items-center gap-1 text-xs">
+                                            <span className="text-[#d4af37]">
+                                                ★★★★★
+                                            </span>
+                                            <span className="font-semibold text-[#78716C]">
+                                                (5.0)
+                                            </span>
                                         </div>
-                                        <p className="text-[#44403C] text-xs leading-relaxed line-clamp-3">
+                                        <p className="line-clamp-3 text-xs leading-relaxed text-[#44403C]">
                                             {partner.description}
                                         </p>
                                     </div>
 
                                     <Link
                                         href={`/services?admin_id=${partner.admin_id}`}
-                                        className="mt-6 block w-full bg-[#064E3B] hover:bg-[#043d2e] text-white text-center text-xs font-bold py-3 rounded tracking-wider uppercase transition shadow-sm"
+                                        className="mt-6 block w-full rounded bg-[#064E3B] py-3 text-center text-xs font-bold tracking-wider text-white uppercase shadow-sm transition hover:bg-[#043d2e]"
                                     >
                                         VIEW PARTNER
                                     </Link>
                                 </div>
                             ))
                         ) : (
-                            <p className="text-stone-600 text-sm">No recommended partners found.</p>
+                            <p className="text-sm text-stone-600">
+                                No recommended partners found.
+                            </p>
                         )}
                     </div>
                 </div>
             </section>
 
             {/* --- ADVERTISEMENT / CTA SECTION --- */}
-            <section className="text-center py-28 px-[10%]">
-                <h2 className="font-['Crimson_Pro'] italic text-4xl sm:text-5xl text-[#0C0A09] mb-6">
+            <section className="px-[10%] py-28 text-center">
+                <h2 className="mb-6 font-['Crimson_Pro'] text-4xl text-[#0C0A09] italic sm:text-5xl">
                     For a more efficient booking...
                 </h2>
-                <p className="text-[#44403C] text-sm sm:text-base max-w-2xl mx-auto leading-relaxed mb-8">
-                    Join our community! Level up your salon business and beauty experience with a smart booking system made for you. Join a growing community that values convenience, style, and self-care.
+                <p className="mx-auto mb-8 max-w-2xl text-sm leading-relaxed text-[#44403C] sm:text-base">
+                    Join our community! Level up your salon business and beauty
+                    experience with a smart booking system made for you. Join a
+                    growing community that values convenience, style, and
+                    self-care.
                 </p>
                 <Link
                     href="/register"
-                    className="inline-block bg-[#064E3B] hover:bg-[#043a2c] text-white text-sm font-bold tracking-wider px-12 py-4 rounded-full transition transform hover:scale-105"
+                    className="inline-block transform rounded-full bg-[#064E3B] px-12 py-4 text-sm font-bold tracking-wider text-white transition hover:scale-105 hover:bg-[#043a2c]"
                 >
                     Add my business
                 </Link>
             </section>
 
             {/* --- MAIN FOOTER --- */}
-            <footer className="mt-auto bg-[#F5F5F4] px-[5%] pt-20 pb-8 text-[#44403C] text-sm border-t border-stone-200">
-                <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-10">
-                    <div className="md:col-span-2 space-y-3">
-                        <h4 className="font-['Crimson_Pro'] text-2xl text-[#064E3B] font-bold">DivaBook</h4>
-                        <p className="text-xs text-[#44403C] max-w-sm leading-relaxed">
-                            Redefining luxury beauty through seamless technology and expert craftsmanship.
+            <footer className="mt-auto border-t border-stone-200 bg-[#F5F5F4] px-[5%] pt-20 pb-8 text-sm text-[#44403C]">
+                <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-10 md:grid-cols-4">
+                    <div className="space-y-3 md:col-span-2">
+                        <h4 className="font-['Crimson_Pro'] text-2xl font-bold text-[#064E3B]">
+                            DivaBook
+                        </h4>
+                        <p className="max-w-sm text-xs leading-relaxed text-[#44403C]">
+                            Redefining luxury beauty through seamless technology
+                            and expert craftsmanship.
                         </p>
                     </div>
 
                     <div>
-                        <h5 className="text-xs uppercase tracking-widest text-[#0C0A09] font-bold mb-4">EXPLORE</h5>
+                        <h5 className="mb-4 text-xs font-bold tracking-widest text-[#0C0A09] uppercase">
+                            EXPLORE
+                        </h5>
                         <div className="flex flex-col gap-2 text-xs">
-                            <Link href="/" className="hover:text-[#064E3B] transition">
+                            <Link
+                                href="/"
+                                className="transition hover:text-[#064E3B]"
+                            >
                                 About Us
                             </Link>
-                            <Link href="/register" className="hover:text-[#064E3B] transition">
+                            <Link
+                                href="/register"
+                                className="transition hover:text-[#064E3B]"
+                            >
                                 Partner with Us
                             </Link>
                         </div>
                     </div>
 
                     <div>
-                        <h5 className="text-xs uppercase tracking-widest text-[#0C0A09] font-bold mb-4">LEGAL</h5>
+                        <h5 className="mb-4 text-xs font-bold tracking-widest text-[#0C0A09] uppercase">
+                            LEGAL
+                        </h5>
                         <div className="flex flex-col gap-2 text-xs">
-                            <a href="#" className="hover:text-[#064E3B] transition">
+                            <a
+                                href="#"
+                                className="transition hover:text-[#064E3B]"
+                            >
                                 Privacy Policy
                             </a>
-                            <a href="#" className="hover:text-[#064E3B] transition">
+                            <a
+                                href="#"
+                                className="transition hover:text-[#064E3B]"
+                            >
                                 Terms of Service
                             </a>
                         </div>
                     </div>
                 </div>
 
+<<<<<<< HEAD
+                <div className="mt-14 border-t border-[#E7E5E4] pt-5 text-center text-xs text-[#78716C]">
+                    © 2026 DivaBook. The Luxury of Care.
+=======
                 <div className="mt-14 pt-5 border-t border-[#E7E5E4] text-center text-xs text-[#78716C]">
                     © {new Date().getFullYear()} DivaBook. The Luxury of Care.
+>>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
                 </div>
             </footer>
         </div>

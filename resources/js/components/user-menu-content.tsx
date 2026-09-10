@@ -42,10 +42,10 @@ export function UserMenuContent({ user }: Props) {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-                    <Link href="/logout" method="post" as="button">
-                        <LogOut className="mr-2 h-4 w-4" />
-                        <span>Log out</span>
-                    </Link>
+                <Link href="/logout" method="post" as="button">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                </Link>
             </DropdownMenuItem>
         </>
     );

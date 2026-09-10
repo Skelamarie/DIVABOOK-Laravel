@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\BookingController; // Added BookingController
 
 /*
 |--------------------------------------------------------------------------
@@ -147,6 +148,35 @@ Route::get('/services/{id}', function ($id) {
         ],
     ]);
 })->name('services.show');
+
+/*
+|--------------------------------------------------------------------------
+| Booking Flow Routes
+|--------------------------------------------------------------------------
+*/
+// Step 1: B1.jsx (Select Service & Addons)
+Route::get('/booking/step-1', [BookingController::class, 'create'])->name('bookings.create');
+
+// Step 2: B2.jsx (Select Date & Time, receives Step 1 data via query string)
+Route::get('/booking/step-2', function (Request $request) {
+    return Inertia::render('Customer/BookingStep2', [
+        'bookingData' => $request->all() // Passes B1 data down to B2
+    ]);
+})->name('bookings.step2');
+
+// Step 3: P1.jsx (Checkout / Payment, receives Step 1 & 2 data)
+Route::get('/booking/checkout', function (Request $request) {
+    return Inertia::render('Customer/PaymentPage', [
+        'bookingData' => $request->all() // Passes B1 and B2 data down to P1
+    ]);
+})->name('bookings.checkout');
+
+// Submit Booking to MongoDB
+Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
+
+// Success Page
+Route::get('/bookings/success/{booking}', [BookingController::class, 'showSuccess'])->name('bookings.success');
+
 
 /*
 |--------------------------------------------------------------------------

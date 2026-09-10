@@ -32,6 +32,7 @@ class Booking extends Model
         'special_requests',
         'total_price',
         'amount_paid',
+        'payment_strategy', // Added to support P1.jsx selection
         'payment_method',
         'payment_status',
         'sender_name',
@@ -46,12 +47,13 @@ class Booking extends Model
         return [
             'removal' => 'boolean',
             'provider_chooses' => 'boolean',
-            'service_price' => 'integer',
-            'size_price' => 'integer',
-            'addon_price' => 'integer',
-            'removal_price' => 'integer',
-            'total_price' => 'integer',
-            'amount_paid' => 'integer',
+            // Cast to float instead of integer to preserve decimal values
+            'service_price' => 'float',
+            'size_price' => 'float',
+            'addon_price' => 'float',
+            'removal_price' => 'float',
+            'total_price' => 'float',
+            'amount_paid' => 'float',
         ];
     }
 
