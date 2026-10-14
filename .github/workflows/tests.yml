@@ -22,14 +22,20 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
         with:
-          php-version: '8.3'
+          php-version: '8.4'
+          extensions: mongodb-2.5.4, mbstring, curl, fileinfo, openssl, dom, xml, xmlwriter, pdo_sqlite, sqlite3
           tools: composer:v2
           coverage: none
+        env:
+          fail-fast: true
 
       - name: Setup Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '22'
+
+      - name: Verify locked dependency requirements
+        run: composer check-platform-reqs --lock
 
       - name: Setup Application
         run: composer setup
