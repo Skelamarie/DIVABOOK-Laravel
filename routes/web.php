@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Middleware\EnsurePartnerSession;
@@ -53,8 +54,10 @@ Route::get('/', function () {
 
 // Contact Us Page
 Route::get('/contact', function () {
-    return Inertia::render('Contact');
+    return Inertia::render('Customer/Contact');
 })->name('contact');
+
+Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:10,1')->name('contact.send');
 
 // General Services Catalog Page
 Route::get('/services', function (Request $request) {
@@ -341,15 +344,24 @@ Route::prefix('admin')->middleware(EnsurePartnerSession::class)->group(function 
         $pendingRequests = [];
 
         foreach ($bookings as $doc) {
-            $dateKey = Carbon::parse($doc->selected_date)->format('Y-n-j');
+            try {
+                $dateKey = Carbon::parse($doc->selected_date)->format('Y-n-j');
+            } catch (\Throwable $exception) {
+                // An invalid legacy date must not prevent other bookings displaying.
+                $dateKey = 'unscheduled';
+            }
+            $docId = (string) ($doc->_id ?? $doc->id);
             $status = strtolower($doc->status ?? 'pending');
 
             if ($status === 'pending') {
-                $pendingRequests[] = $doc;
+                $item = $doc->toArray();
+                $item['id'] = $docId;
+                $item['_id'] = $docId;
+                $pendingRequests[] = $item;
             }
 
             $calendarAppts[$dateKey][] = [
-                'id' => (string) $doc->_id,
+                'id' => $docId,
                 'title' => $doc->service_name ?? 'Service',
                 'time' => $doc->selected_time ?? '',
                 'date' => $doc->selected_date ?? '',
@@ -357,7 +369,7 @@ Route::prefix('admin')->middleware(EnsurePartnerSession::class)->group(function 
                 'name' => trim(($doc->first_name ?? '').' '.($doc->last_name ?? '')),
                 'email' => $doc->email ?? '',
                 'request' => $doc->special_requests ?? '',
-                'method' => $doc->payment_method ?? 'N/A',
+                'method' => $doc->payment_method ?? ($doc->payment_strategy ?? 'N/A'),
                 'paid' => number_format((float) ($doc->amount_paid ?? 0), 2),
             ];
         }
@@ -379,10 +391,13 @@ Route::prefix('admin')->middleware(EnsurePartnerSession::class)->group(function 
         $adminId = session('admin_id');
         $partner = Partner::where('admin_id', $adminId)->first();
         $booking = Booking::where('_id', $id)->where('admin_id', $adminId)->firstOrFail();
+        $bookingData = $booking->toArray();
+        $bookingData['id'] = (string) ($booking->_id ?? $booking->id);
+        $bookingData['_id'] = $bookingData['id'];
 
         return Inertia::render('Admin/ViewDetails', [
             'partner' => $partner,
-            'booking' => $booking,
+            'booking' => $bookingData,
         ]);
     })->name('admin.bookings.detail');
 
@@ -422,6 +437,8 @@ Route::prefix('admin')->middleware(EnsurePartnerSession::class)->group(function 
             'services' => $services,
         ]);
     })->name('admin.customization');
+
+    Route::post('/delete-account', [PartnerController::class, 'destroy'])->name('admin.account.destroy');
 
     Route::post('/profile', [PartnerController::class, 'update'])->name('admin.profile.update');
 

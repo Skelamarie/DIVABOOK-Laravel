@@ -6,6 +6,8 @@ use App\Http\Requests\LoginPartnerRequest;
 use App\Http\Requests\StorePartnerRequest;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Models\Partner;
+use App\Models\Booking;
+use App\Models\Service;
 use App\Services\CloudinaryService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,7 +21,7 @@ class PartnerController extends Controller
         $data = $request->validated();
         $partner = Partner::where('admin_id', $data['admin_id'])->where('email', $data['email'])->first();
         if (! $partner || ! Hash::check($data['password'], $partner->password)) {
-            return back()->withErrors(['auth_failed' => 'Invalid Admin-ID, Email, or Password.']);
+            return back()->withErrors(['auth_failed' => 'Invalid Admin-ID, Email, or Password.'])->withInput($request->only('admin_id', 'email'));
         }
 
         $request->session()->regenerate();
@@ -83,5 +85,15 @@ class PartnerController extends Controller
         $request->session()->regenerateToken();
 
         return to_route('login');
+    }
+
+    public function destroy(Request $request): RedirectResponse
+    {
+        $adminId = $request->session()->get('admin_id');
+        Partner::where('admin_id', $adminId)->delete();
+        Service::where('admin_id', $adminId)->delete();
+        Booking::where('admin_id', $adminId)->delete();
+
+        return $this->logout($request);
     }
 }

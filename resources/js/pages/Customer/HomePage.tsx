@@ -334,8 +334,8 @@ export default function HomePage({
                     </div>
                 </div>
 
-                <div className="mt-14 border-t border-[#E7E5E4] pt-5 text-center text-xs text-[#78716C]">
-                    © 2026 DivaBook. The Luxury of Care.
+                <div className="mt-14 pt-5 border-t border-[#E7E5E4] text-center text-xs text-[#78716C]">
+                    © {new Date().getFullYear()} DivaBook. The Luxury of Care.
                 </div>
             </footer>
         </div>

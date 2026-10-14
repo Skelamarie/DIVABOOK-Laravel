@@ -32,7 +32,7 @@ Then run:
     php artisan test --filter=DivaBook
     php artisan cloudinary:check
 
-The production build generates Wayfinder route/action types. For frontend development use npm run dev instead of relying on an old build. Cloudinary's diagnostic checks local configuration, PHP limits, authentication, and folder mode; it uploads no images. The current suite has 30 tests and 189 assertions. Automated upload tests use simulated API responses; separately verify actual uploads in the app.
+The production build generates Wayfinder route/action types. For frontend development use npm run dev instead of relying on an old build. Cloudinary's diagnostic checks local configuration, PHP limits, authentication, and folder mode; it uploads no images. The current suite has 36 tests and 235 assertions. Automated upload tests use simulated API responses; separately verify actual uploads in the app.
 
 ## Image paths
 
@@ -48,3 +48,11 @@ Names are sanitized. Receipt/inspiration collisions get unique suffixes; sample/
 Try a logo upload, sample photos, and a booking with an inspiration image and receipt. Verify Cloudinary folders, MongoDB URLs, and persistence after refreshing. Payment QR/store configuration must be valid for the selected provider. The app accepts JPG/PNG images up to 5 MB each and up to 10 sample photos per service submission.
 
 Complete source and tests are in app/, config/, resources/, routes/, and tests/Feature/DivaBook/. Local credentials, dependencies, generated builds, PHP configuration, patch backups, and test screenshots are excluded from this change.
+
+## Integration of team changes
+
+The merge includes the team's main branch through 6af1d6f. Login/registration notices, booking display and identifier fixes, branding/color controls, loading feedback, deletion confirmation dialogs, and the new Customer/Contact page are retained. The sidebar and Form Request/Cloudinary implementations replace the older navbar, inline validation, and local-disk upload paths where they conflict.
+
+The Contact form posts to /contact and saves validated inquiries in MongoDB's inquiries collection. It sends no email; a database failure shows a retry error. Account deletion from Customization remains restricted to the current partner session. Booking detail/status lookups use the requested ID and the session admin; missing or other-admin records return 404, with no unrelated-booking fallback.
+
+The starter auth/settings pages are retained because Fortify and settings routes still refer to them. The starter DeleteUser component retains its password-protected SQL-user endpoint; the salon deletion confirmation uses the separate partner endpoint.
