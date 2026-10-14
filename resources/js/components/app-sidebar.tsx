@@ -1,9 +1,15 @@
-import { Link } from '@inertiajs/react';
-import { BookOpen, FolderGit2, LayoutGrid } from 'lucide-react';
-import AppLogo from '@/components/app-logo';
-import { NavFooter } from '@/components/nav-footer';
+import { Link, usePage } from '@inertiajs/react';
+import {
+    CalendarDays,
+    House,
+    LayoutGrid,
+    LogOut,
+    Mail,
+    Paintbrush,
+    Scissors,
+    Users,
+} from 'lucide-react';
 import { NavMain } from '@/components/nav-main';
-import { NavUser } from '@/components/nav-user';
 import {
     Sidebar,
     SidebarContent,
@@ -13,52 +19,83 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-//import { dashboard } from '@/routes';
 import type { NavItem } from '@/types';
 
-const mainNavItems: NavItem[] = [
+const adminItems: NavItem[] = [
+    { title: 'Overview', href: '/admin/overview', icon: LayoutGrid },
     {
-        title: 'Dashboard',
-        href: '/dashboard',
-        icon: LayoutGrid,
+        title: 'Booking & Appointment',
+        href: '/admin/bookings',
+        icon: CalendarDays,
     },
+    { title: 'Client', href: '/admin/clients', icon: Users },
+    { title: 'Services', href: '/admin/services', icon: Scissors },
+    { title: 'Customization', href: '/admin/customization', icon: Paintbrush },
 ];
-
-const footerNavItems: NavItem[] = [
-    {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: FolderGit2,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
-    },
+const customerItems: NavItem[] = [
+    { title: 'Home', href: '/', icon: House },
+    { title: 'Services', href: '/services', icon: Scissors },
+    { title: 'Contact Us', href: '/contact', icon: Mail },
 ];
 
 export function AppSidebar() {
+    const { partnerSession } = usePage().props;
+    const isPartner = Boolean(partnerSession?.admin_id);
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link href={'/dashboard'} prefetch>
-                                <AppLogo />
+                            <Link href={isPartner ? '/admin/overview' : '/'}>
+                                <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-emerald-900 font-bold text-white">
+                                    D
+                                </span>
+                                <span className="truncate font-semibold">
+                                    DivaBook
+                                </span>
                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
-
             <SidebarContent>
-                <NavMain items={mainNavItems} />
+                <NavMain items={isPartner ? adminItems : customerItems} />
             </SidebarContent>
-
             <SidebarFooter>
-                <NavFooter items={footerNavItems} className="mt-auto" />
-                <NavUser />
+                {isPartner && (
+                    <div className="text-muted-foreground truncate px-2 text-xs group-data-[collapsible=icon]:hidden">
+                        {partnerSession.shop_name}
+                        <br />
+                        {partnerSession.admin_id}
+                    </div>
+                )}
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton
+                            asChild
+                            tooltip={isPartner ? 'Logout' : 'Partner Login'}
+                        >
+                            {isPartner ? (
+                                <Link
+                                    href="/logout"
+                                    method="post"
+                                    as="button"
+                                    className="w-full"
+                                >
+                                    <LogOut />
+                                    <span>Logout</span>
+                                </Link>
+                            ) : (
+                                <Link href="/login">
+                                    <Users />
+                                    <span>Partner Login</span>
+                                </Link>
+                            )}
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                </SidebarMenu>
             </SidebarFooter>
         </Sidebar>
     );

@@ -12,6 +12,10 @@ declare module '@inertiajs/core' {
             name: string;
             auth: Auth;
             sidebarOpen: boolean;
+            partnerSession: {
+                admin_id: string | null;
+                shop_name: string | null;
+            };
             [key: string]: unknown;
         };
     }

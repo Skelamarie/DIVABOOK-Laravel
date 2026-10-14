@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
-import AdminNavbar from '@/components/AdminNavbar';
 
 interface Props {
     partner: any;
@@ -14,22 +13,17 @@ export default function ViewDetail({ partner, booking }: Props) {
         router.post(`/admin/bookings/${booking._id}/status`, { status });
     };
 
+    const receiptUrl =
+        booking.receipt_path &&
+        (/^https?:\/\//.test(booking.receipt_path)
+            ? booking.receipt_path
+            : '/storage/' + booking.receipt_path);
+
     return (
-<<<<<<< HEAD
-        <div className="min-h-screen bg-[#faf9f6] pt-[80px] font-sans text-stone-800">
+        <div className="min-h-full bg-[#faf9f6] font-sans text-stone-800">
             <Head
                 title={`Booking - ${booking.first_name} ${booking.last_name}`}
             />
-            <AdminNavbar
-                active="bookings"
-                salonName={partner?.branding?.salon_name || partner?.shop_name}
-                adminId={partner?.admin_id}
-            />
-=======
-        <div className="min-h-screen bg-[#faf9f6] text-stone-800 font-sans pt-[80px]">
-            <Head title={`Booking - ${booking.first_name} ${booking.last_name}`} />
-            <AdminNavbar active="bookings" adminId={partner?.admin_id} />
->>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
 
             <main className="mx-auto max-w-5xl px-6 py-8">
                 <Link
@@ -135,11 +129,9 @@ export default function ViewDetail({ partner, booking }: Props) {
                         <div className="flex h-64 w-full items-center justify-center overflow-hidden rounded-lg border border-stone-200 bg-stone-100">
                             {booking.receipt_path ? (
                                 <img
-                                    src={booking.receipt_path}
+                                    src={receiptUrl}
                                     alt="Payment Receipt"
-                                    onClick={() =>
-                                        setZoomedImage(booking.receipt_path)
-                                    }
+                                    onClick={() => setZoomedImage(receiptUrl)}
                                     className="h-full w-full cursor-zoom-in object-cover hover:opacity-90"
                                 />
                             ) : (

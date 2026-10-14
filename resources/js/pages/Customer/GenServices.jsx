@@ -54,41 +54,6 @@ export default function GenServices({
             </Head>
 
             {/* --- TOP NAVIGATION BAR --- */}
-            <nav className="sticky top-0 z-50 flex items-center justify-between bg-[#14532d] px-[5%] py-[25px] text-white">
-                <div className="flex items-center gap-[30px] text-[13px] tracking-[1.5px]">
-                    <Link
-                        href="/"
-                        className="transition hover:text-emerald-200"
-                    >
-                        HOME
-                    </Link>
-                    <Link
-                        href="/services"
-                        className="border-b-2 border-white pb-0.5 font-bold"
-                    >
-                        SERVICES
-                    </Link>
-                </div>
-
-                <div className="text-center">
-                    <Link
-                        href="/"
-                        className="font-['Crimson_Pro'] text-[32px] tracking-[2px] text-[#F9F8F6] italic"
-                    >
-                        DIVABOOK
-                    </Link>
-                </div>
-
-                <div className="flex items-center gap-[30px] text-[13px] tracking-[1.5px]">
-                    <Link
-                        href="/contact"
-                        className="transition hover:text-emerald-200"
-                    >
-                        CONTACT US
-                    </Link>
-                    <span className="cursor-pointer text-base">🔍</span>
-                </div>
-            </nav>
 
             <main className="mx-auto w-full max-w-[1200px] flex-grow px-[5%] py-12">
                 {/* Back Link */}

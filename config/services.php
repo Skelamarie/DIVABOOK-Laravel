@@ -14,6 +14,8 @@ return [
     |
     */
 
+    'cloudinary' => require __DIR__.'/cloudinary.php',
+
     'postmark' => [
         'key' => env('POSTMARK_API_KEY'),
     ],

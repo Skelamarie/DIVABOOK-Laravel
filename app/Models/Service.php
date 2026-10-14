@@ -8,6 +8,7 @@ use MongoDB\Laravel\Eloquent\Relations\BelongsTo;
 class Service extends Model
 {
     protected $connection = 'mongodb';
+
     protected $collection = 'services';
 
     protected $fillable = [
@@ -17,12 +18,16 @@ class Service extends Model
         'description',
         'rate',
         'photos',
+        'photo_public_ids',
+        'photo_sequence',
     ];
 
     protected function casts(): array
     {
         return [
             'photos' => 'array',
+            'photo_public_ids' => 'array',
+            'photo_sequence' => 'integer',
         ];
     }
 

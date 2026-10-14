@@ -8,6 +8,7 @@ use MongoDB\Laravel\Eloquent\Relations\BelongsTo;
 class Booking extends Model
 {
     protected $connection = 'mongodb';
+
     protected $collection = 'bookings';
 
     protected $fillable = [
@@ -37,6 +38,9 @@ class Booking extends Model
         'payment_status',
         'sender_name',
         'receipt_path',
+        'receipt_public_id',
+        'reference_public_id',
+        'terms_agreed',
         'reference_image',
         'provider_chooses',
         'status',
@@ -45,6 +49,7 @@ class Booking extends Model
     protected function casts(): array
     {
         return [
+            'terms_agreed' => 'boolean',
             'removal' => 'boolean',
             'provider_chooses' => 'boolean',
             // Cast to float instead of integer to preserve decimal values

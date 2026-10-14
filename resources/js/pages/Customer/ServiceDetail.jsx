@@ -1,8 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Head, Link } from '@inertiajs/react';
-import B1 from './B1'; // Adjust path if B1.jsx is in a different folder
-import B2 from './B2'; // Adjust path if B2.jsx is in a different folder
-import P1 from './P1'; // <-- ADD THIS IMPORT
+import BookingFlow from '@/components/booking-flow';
 
 // Catches render errors inside the booking flow (B1/B2/P1) so a bug in one of
 // those steps shows a visible message instead of silently blanking the page,
@@ -22,12 +20,26 @@ class BookingErrorBoundary extends React.Component {
     render() {
         if (this.state.error) {
             return (
-                <div style={{ padding: 40, fontFamily: 'monospace', color: '#7f1d1d', background: '#fef2f2' }}>
-                    <h2 style={{ marginBottom: 12 }}>Something broke while loading the booking step.</h2>
-                    <p style={{ marginBottom: 12 }}>{String(this.state.error.message || this.state.error)}</p>
+                <div
+                    style={{
+                        padding: 40,
+                        fontFamily: 'monospace',
+                        color: '#7f1d1d',
+                        background: '#fef2f2',
+                    }}
+                >
+                    <h2 style={{ marginBottom: 12 }}>
+                        Something broke while loading the booking step.
+                    </h2>
+                    <p style={{ marginBottom: 12 }}>
+                        {String(this.state.error.message || this.state.error)}
+                    </p>
                     <button
                         type="button"
-                        onClick={() => { this.setState({ error: null }); this.props.onReset?.(); }}
+                        onClick={() => {
+                            this.setState({ error: null });
+                            this.props.onReset?.();
+                        }}
                         style={{ padding: '8px 16px', cursor: 'pointer' }}
                     >
                         ← Go back
@@ -39,17 +51,20 @@ class BookingErrorBoundary extends React.Component {
     }
 }
 
-export default function ServiceDetail({ service, occupiedSlotsMap = {} }) {
+export default function ServiceDetail({
+    service,
+    occupiedSlotsMap = {},
+    bookingOptions,
+}) {
     const [selectedImg, setSelectedImg] = useState(null);
-    
+
     // Booking flow step state:
     // 0 = Service Details View
     // 1 = B1.jsx (Step 1: Booking Details / Date & Time)
     // 2 = B2.jsx (Step 2: Personal Information)
-    const [bookingStep, setBookingStep] = useState(0); 
+    const [bookingStep, setBookingStep] = useState(0);
 
     // Store shared booking data collected between B1 and B2
-    const [bookingData, setBookingData] = useState({});
 
     const provider = service?.provider || {};
     const photos = service?.photos || (service?.photo ? [service.photo] : []);
@@ -87,10 +102,6 @@ export default function ServiceDetail({ service, occupiedSlotsMap = {} }) {
     }, [provider]);
 
     // Handle transition from B1 -> B2 (Called when "CONFIRM APPOINTMENT" is clicked in B1)
-    const handleB1Next = (dataFromB1) => {
-        setBookingData(prev => ({ ...prev, ...dataFromB1 }));
-        setBookingStep(2); // Go to B2
-    };
 
     // B1/B2/P1 expect different field names than `provider` uses
     // (salon_name/logo_path/location vs shop_name/logo/address).
@@ -103,56 +114,15 @@ export default function ServiceDetail({ service, occupiedSlotsMap = {} }) {
         location: provider.location || provider.address,
     };
 
-// Step 1: Render B1 Component
     if (bookingStep === 1) {
         return (
             <BookingErrorBoundary onReset={() => setBookingStep(0)}>
-                <B1
+                <BookingFlow
                     service={service}
                     salonProfile={salonProfileForBooking}
+                    bookingOptions={bookingOptions}
                     occupiedSlotsMap={occupiedSlotsMap}
                     onBack={() => setBookingStep(0)}
-                    onNext={(dataFromB1) => {
-                        setBookingData(prev => ({ ...prev, ...dataFromB1 }));
-                        setBookingStep(2); // Move to B2
-                    }}
-                />
-            </BookingErrorBoundary>
-        );
-    }
-
-    // Step 2: Render B2 Component
-    if (bookingStep === 2) {
-        return (
-            <BookingErrorBoundary onReset={() => setBookingStep(1)}>
-                <B2
-                    bookingData={bookingData}
-                    salonProfile={salonProfileForBooking}
-                    onBack={() => setBookingStep(1)}
-                    onNext={(finalData) => {
-                        setBookingData(prev => ({ ...prev, ...finalData }));
-                        setBookingStep(3); // Move to P1
-                    }}
-                />
-            </BookingErrorBoundary>
-        );
-    }
-
-    // Step 3: Render P1 Component
-    if (bookingStep === 3) {
-        return (
-            <BookingErrorBoundary onReset={() => setBookingStep(2)}>
-                <P1
-                    bookingData={bookingData}
-                    salonProfile={salonProfileForBooking}
-                    service={service}
-                    onBack={() => setBookingStep(2)}
-                    onSubmit={(finalBookingData) => {
-                        // TODO: wire this up to your actual booking submission
-                        // (e.g. Inertia's router.post('/booking/confirm', finalBookingData)).
-                        console.log('Booking submitted:', { ...bookingData, ...finalBookingData });
-                    }}
-                    onGoHome={() => { window.location.href = '/'; }}
                 />
             </BookingErrorBoundary>
         );
@@ -168,45 +138,6 @@ export default function ServiceDetail({ service, occupiedSlotsMap = {} }) {
             </Head>
 
             {/* Navigation Bar */}
-            <nav
-                className="sticky top-0 z-50 flex items-center justify-between px-[5%] py-3 shadow-md"
-                style={{ backgroundColor: '#14532d', color: '#ffffff' }}
-            >
-                <div className="flex items-center gap-6 text-xs font-medium tracking-widest">
-                    <Link
-                        href="/"
-                        className="transition hover:text-emerald-200"
-                        style={{ color: '#ffffff' }}
-                    >
-                        HOME
-                    </Link>
-                    <Link
-                        href="/services"
-                        className="border-b-2 border-white pb-0.5 font-bold"
-                        style={{ color: '#ffffff' }}
-                    >
-                        SERVICES
-                    </Link>
-                </div>
-                <div className="text-center">
-                    <Link
-                        href="/"
-                        className="font-['Crimson_Pro'] text-2xl tracking-widest italic"
-                        style={{ color: '#F9F8F6' }}
-                    >
-                        DIVABOOK
-                    </Link>
-                </div>
-                <div className="flex items-center gap-6 text-xs font-medium tracking-widest">
-                    <Link
-                        href="/contact"
-                        className="transition hover:text-emerald-200"
-                        style={{ color: '#ffffff' }}
-                    >
-                        CONTACT US
-                    </Link>
-                </div>
-            </nav>
 
             <main
                 className="mx-auto w-full max-w-[1100px] flex-grow space-y-4 px-6 py-4"
@@ -259,7 +190,8 @@ export default function ServiceDetail({ service, occupiedSlotsMap = {} }) {
                             {provider.shop_name || "Skela's Nail Art"}
                         </h2>
                         <p className="text-xs" style={{ color: '#44403c' }}>
-                            {provider.description || 'Amazing Nail Art by Skela'}
+                            {provider.description ||
+                                'Amazing Nail Art by Skela'}
                         </p>
 
                         <div
@@ -274,11 +206,16 @@ export default function ServiceDetail({ service, occupiedSlotsMap = {} }) {
                                     borderColor: dynamicTheme.border,
                                 }}
                             >
-                                🎓 {provider.credentials || '10 years experience'}
+                                🎓{' '}
+                                {provider.credentials || '10 years experience'}
                             </span>
-                            <span>📍 {provider.address || 'mandug davao city'}</span>
+                            <span>
+                                📍 {provider.address || 'mandug davao city'}
+                            </span>
                             <span>📞 {provider.phone || '1234567891'}</span>
-                            <span>✉️ {provider.email || 'skela@gmail.com'}</span>
+                            <span>
+                                ✉️ {provider.email || 'skela@gmail.com'}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -379,7 +316,9 @@ export default function ServiceDetail({ service, occupiedSlotsMap = {} }) {
                                                 <img
                                                     src={imgSrc}
                                                     alt={`Inspiration ${idx + 1}`}
-                                                    onClick={() => setSelectedImg(imgSrc)}
+                                                    onClick={() =>
+                                                        setSelectedImg(imgSrc)
+                                                    }
                                                     className="h-full w-full cursor-pointer object-cover transition duration-200 hover:scale-105"
                                                 />
                                             ) : (
@@ -497,7 +436,8 @@ export default function ServiceDetail({ service, occupiedSlotsMap = {} }) {
                                 className="text-xs italic"
                                 style={{ color: '#44403c' }}
                             >
-                                "We only use 100% cruelty-free, ammonia-free products."
+                                "We only use 100% cruelty-free, ammonia-free
+                                products."
                             </p>
                         </div>
                     </aside>

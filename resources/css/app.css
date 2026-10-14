@@ -5,7 +5,6 @@
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 
-
 @custom-variant dark (&:is(.dark *));
 
 @theme {
@@ -133,17 +132,6 @@
     --sidebar-ring: oklch(0.439 0 0);
 }
 
-input,
-textarea,
-select {
-    color: #000000 !important;
-}
-
-input::placeholder,
-textarea::placeholder {
-    color: #9ca3af !important;
-}
-
 @layer base {
     * {
         @apply border-border;
@@ -152,4 +140,66 @@ textarea::placeholder {
     body {
         @apply bg-background text-foreground;
     }
+}
+
+/* Scope the booking controls so legacy page styles cannot change their geometry. */
+.booking-flow {
+    color-scheme: light;
+    color: #1c1917;
+    background: #fafaf9;
+}
+.booking-flow .booking-field {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    border: 1px solid #a8a29e;
+    border-radius: 0.5rem;
+    background: white;
+    color: #1c1917;
+    padding: 0.625rem 0.75rem;
+    font-size: 1rem;
+}
+.booking-flow .booking-field::placeholder {
+    color: #78716c;
+}
+.booking-flow .booking-field:focus-visible {
+    outline: 2px solid #047857;
+    outline-offset: 2px;
+}
+.booking-flow .booking-field[aria-invalid='true'] {
+    border-color: #dc2626;
+}
+.booking-flow .booking-check {
+    appearance: auto;
+    display: inline-block;
+    position: static;
+    opacity: 1;
+    width: 1.125rem;
+    height: 1.125rem;
+    margin: 0.15rem 0 0;
+    flex: 0 0 auto;
+    accent-color: #047857;
+}
+.booking-flow .booking-check:focus-visible {
+    outline: 2px solid #047857;
+    outline-offset: 3px;
+}
+.booking-flow .booking-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #44403c;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+.booking-flow .booking-check-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+.booking-flow button[type='submit'] {
+    background-color: var(--booking-primary, #064e3b);
 }

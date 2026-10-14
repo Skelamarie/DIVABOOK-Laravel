@@ -1,26 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Head, router, useForm } from '@inertiajs/react';
-import AdminNavbar from '@/components/AdminNavbar';
+import ImageUploadField from '@/components/image-upload-field';
 
 interface CustomizationProps {
     partner: any;
     services: any[];
+    initialTab?: 'profile' | 'services';
 }
 
 export default function Customization({
     partner,
     services = [],
+    initialTab = 'profile',
 }: CustomizationProps) {
     const [activeTab, setActiveTab] = useState<'profile' | 'services'>(
-        'profile',
+        initialTab,
     );
     const [modalOpen, setModalOpen] = useState(false);
     const [editingService, setEditingService] = useState<any>(null);
 
     const branding = partner?.branding || {};
 
+    useEffect(() => {
+        setActiveTab(initialTab);
+    }, [initialTab]);
+
     // 1. Profile Form
     const profileForm = useForm({
+        logo_file: null as File | null,
         salon_name: branding.salon_name || partner?.shop_name || '',
         description: branding.description || '',
         credentials: branding.credentials || '',
@@ -37,11 +44,16 @@ export default function Customization({
 
     const submitProfile = (e: React.FormEvent) => {
         e.preventDefault();
-        profileForm.post('/admin/profile');
+        profileForm.post('/admin/profile', {
+            forceFormData: true,
+            preserveScroll: true,
+            onSuccess: () => profileForm.setData('logo_file', null),
+        });
     };
 
     // 2. Service Form
     const serviceForm = useForm({
+        photos: [] as File[],
         service_id: '',
         service_name: '',
         category: 'Hair',
@@ -52,7 +64,9 @@ export default function Customization({
     const openServiceModal = (svc: any = null) => {
         if (svc) {
             setEditingService(svc);
+            serviceForm.clearErrors();
             serviceForm.setData({
+                photos: [],
                 service_id: svc._id || svc.id,
                 service_name: svc.name,
                 category: svc.category,
@@ -63,12 +77,15 @@ export default function Customization({
             setEditingService(null);
             serviceForm.reset();
         }
+        serviceForm.clearErrors();
         setModalOpen(true);
     };
 
     const submitService = (e: React.FormEvent) => {
         e.preventDefault();
         serviceForm.post('/admin/services', {
+            forceFormData: true,
+            preserveScroll: true,
             onSuccess: () => {
                 setModalOpen(false);
                 serviceForm.reset();
@@ -83,32 +100,10 @@ export default function Customization({
     };
 
     return (
-<<<<<<< HEAD
-        <div className="min-h-screen bg-[#faf9f6] font-sans text-stone-800">
+        <div className="min-h-full bg-[#faf9f6] font-sans text-stone-800">
             <Head title="Customization - Admin Portal" />
 
             {/* Top Navigation */}
-            <nav className="sticky top-0 z-40 flex h-[76px] items-center justify-between border-b border-stone-200 bg-white px-8">
-                <div className="flex items-center gap-6">
-                    <span className="font-serif text-2xl font-black text-[#064E3B] italic">
-                        DIVABOOK
-                    </span>
-                    <span className="rounded bg-stone-100 px-2.5 py-1 font-mono text-xs text-stone-600">
-                        Admin: {partner?.admin_id}
-                    </span>
-                </div>
-                <button
-                    onClick={() => router.post('/logout')}
-                    className="text-xs font-bold tracking-wider text-red-600 uppercase hover:text-red-700"
-                >
-                    Sign Out
-                </button>
-            </nav>
-=======
-        <div className="min-h-screen bg-[#faf9f6] text-stone-800 font-sans pt-[80px]">
-            <Head title="Customization - Admin Portal" />
-            <AdminNavbar active="customization" adminId={partner?.admin_id} />
->>>>>>> cd3009760716be2bcbf08c7fd8ffea22f330cb8d
 
             <main className="mx-auto max-w-6xl p-6 md:p-8">
                 {/* Header */}
@@ -122,6 +117,18 @@ export default function Customization({
                     </p>
                 </div>
 
+                {Object.keys(profileForm.errors).length > 0 && (
+                    <div
+                        role="alert"
+                        className="mb-4 rounded border border-red-200 bg-red-50 p-3 text-sm text-red-800"
+                    >
+                        {Object.entries(profileForm.errors).map(
+                            ([field, message]) => (
+                                <p key={field}>{message}</p>
+                            ),
+                        )}
+                    </div>
+                )}
                 {/* Tab Switcher Buttons */}
                 <div className="mb-6 flex gap-2 border-b border-stone-200 pb-3">
                     <button
@@ -150,8 +157,29 @@ export default function Customization({
                 {activeTab === 'profile' && (
                     <form
                         onSubmit={submitProfile}
+                        encType="multipart/form-data"
                         className="space-y-6 rounded-xl border border-stone-200 bg-white p-6 sm:p-8"
                     >
+                        <ImageUploadField
+                            name="logo_file"
+                            label="Profile Picture / Salon Logo"
+                            files={
+                                profileForm.data.logo_file
+                                    ? [profileForm.data.logo_file]
+                                    : []
+                            }
+                            onChange={(files) =>
+                                profileForm.setData(
+                                    'logo_file',
+                                    files[0] || null,
+                                )
+                            }
+                            savedImages={
+                                branding.logo_path ? [branding.logo_path] : []
+                            }
+                            error={profileForm.errors.logo_file}
+                            disabled={profileForm.processing}
+                        />
                         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                             <div className="space-y-4">
                                 <h3 className="text-sm font-bold tracking-wider text-stone-700 uppercase">
@@ -324,6 +352,23 @@ export default function Customization({
                                         className="flex flex-col justify-between rounded-xl border border-stone-200 bg-white p-5"
                                     >
                                         <div>
+                                            {svc.photos?.[0] && (
+                                                <img
+                                                    src={
+                                                        /^https?:\/\//.test(
+                                                            svc.photos[0],
+                                                        ) ||
+                                                        svc.photos[0].startsWith(
+                                                            '/',
+                                                        )
+                                                            ? svc.photos[0]
+                                                            : '/' +
+                                                              svc.photos[0]
+                                                    }
+                                                    alt={svc.name + ' sample'}
+                                                    className="mb-3 aspect-video w-full rounded-lg object-cover"
+                                                />
+                                            )}
                                             <div className="mb-2 flex items-start justify-between">
                                                 <span className="rounded bg-stone-100 px-2 py-0.5 text-[10px] font-bold text-stone-600 uppercase">
                                                     {svc.category}
@@ -371,7 +416,7 @@ export default function Customization({
             {/* Service Add/Edit Modal */}
             {modalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-                    <div className="w-full max-w-md space-y-4 rounded-xl bg-white p-6 shadow-xl">
+                    <div className="max-h-[90vh] w-full max-w-xl space-y-4 overflow-y-auto rounded-xl bg-white p-6 shadow-xl">
                         <div className="flex items-center justify-between border-b pb-2">
                             <h3 className="text-sm font-bold text-stone-800">
                                 {editingService
@@ -382,11 +427,27 @@ export default function Customization({
                                 onClick={() => setModalOpen(false)}
                                 className="text-stone-400 hover:text-stone-700"
                             >
-                                ✕
+                                ×
                             </button>
                         </div>
 
-                        <form onSubmit={submitService} className="space-y-3">
+                        <form
+                            encType="multipart/form-data"
+                            onSubmit={submitService}
+                            className="space-y-3"
+                        >
+                            {Object.keys(serviceForm.errors).length > 0 && (
+                                <div
+                                    role="alert"
+                                    className="rounded border border-red-200 bg-red-50 p-3 text-sm text-red-800"
+                                >
+                                    {Object.entries(serviceForm.errors).map(
+                                        ([field, message]) => (
+                                            <p key={field}>{message}</p>
+                                        ),
+                                    )}
+                                </div>
+                            )}
                             <div>
                                 <label className="mb-1 block text-[10px] font-bold text-stone-500 uppercase">
                                     Service Name
@@ -465,6 +526,18 @@ export default function Customization({
                                 />
                             </div>
 
+                            <ImageUploadField
+                                name="photos[]"
+                                label="Sample Service Images"
+                                files={serviceForm.data.photos}
+                                onChange={(files) =>
+                                    serviceForm.setData('photos', files)
+                                }
+                                savedImages={editingService?.photos || []}
+                                maxFiles={10}
+                                error={serviceForm.errors.photos}
+                                disabled={serviceForm.processing}
+                            />
                             <div className="flex gap-2 pt-2">
                                 <button
                                     type="button"

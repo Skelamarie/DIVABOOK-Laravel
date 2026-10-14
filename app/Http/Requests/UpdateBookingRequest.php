@@ -3,22 +3,17 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateBookingRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return $this->session()->has('admin_id');
     }
 
     public function rules(): array
     {
-        return [
-            'status' => ['sometimes', 'required', 'in:Pending,Confirmed,Completed,Cancelled'],
-            'payment_status' => ['sometimes', 'required', 'string'],
-            'amount_paid' => ['sometimes', 'integer'],
-            'selected_date' => ['sometimes', 'string'],
-            'selected_time' => ['sometimes', 'string'],
-        ];
+        return ['status' => ['required', Rule::in(['pending', 'approved', 'confirmed', 'completed', 'declined', 'cancelled'])]];
     }
 }
