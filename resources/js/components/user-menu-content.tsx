@@ -34,7 +34,7 @@ export function UserMenuContent({ user }: Props) {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
                 <DropdownMenuItem asChild>
-                    <Link href="/profile">
+                    <Link href="/settings/profile">
                         <Settings className="mr-2 h-4 w-4" />
                         <span>Profile</span>
                     </Link>
@@ -42,7 +42,12 @@ export function UserMenuContent({ user }: Props) {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-                <Link href="/logout" method="post" as="button">
+                <Link
+                    href="/logout"
+                    method="post"
+                    as="button"
+                    onClick={handleLogout}
+                >
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>
                 </Link>

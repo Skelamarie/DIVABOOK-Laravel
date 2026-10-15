@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginPartnerRequest;
 use App\Http\Requests\StorePartnerRequest;
 use App\Http\Requests\UpdateProfileRequest;
-use App\Models\Partner;
 use App\Models\Booking;
+use App\Models\Partner;
 use App\Models\Service;
 use App\Services\CloudinaryService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Throwable;
 
@@ -81,6 +82,7 @@ class PartnerController extends Controller
 
     public function logout(Request $request): RedirectResponse
     {
+        Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 

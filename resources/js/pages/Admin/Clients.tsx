@@ -7,7 +7,7 @@ type Client = {
     bookings_count: number;
 };
 
-export default function Clients({ clients = [] }: { clients: Client[] }) {
+export default function Clients({ clients = [] }: { clients?: Client[] }) {
     return (
         <main className="space-y-6 p-6">
             <Head title="Clients" />

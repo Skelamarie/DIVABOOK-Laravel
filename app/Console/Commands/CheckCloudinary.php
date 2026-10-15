@@ -32,8 +32,15 @@ class CheckCloudinary extends Command
             $this->info('Cloudinary configuration is valid. Credentials are hidden.');
             $this->line('PHP configuration file: '.(php_ini_loaded_file() ?: '(none)'));
             $this->line('PHP upload_max_filesize: '.ini_get('upload_max_filesize').'; post_max_size: '.ini_get('post_max_size').'; max_file_uploads: '.ini_get('max_file_uploads'));
-            $postLimit = ini_parse_quantity(ini_get('post_max_size'));
-            if (ini_parse_quantity(ini_get('upload_max_filesize')) < 5 * 1024 * 1024 || ($postLimit > 0 && $postLimit < 64 * 1024 * 1024) || (int) ini_get('max_file_uploads') < 10) {
+            $postSize = ini_get('post_max_size');
+            $uploadSize = ini_get('upload_max_filesize');
+            if ($postSize === false || $uploadSize === false) {
+                $this->error('PHP upload limits could not be inspected. Check your loaded PHP configuration.');
+
+                return self::FAILURE;
+            }
+            $postLimit = ini_parse_quantity($postSize);
+            if (ini_parse_quantity($uploadSize) < 5 * 1024 * 1024 || ($postLimit > 0 && $postLimit < 64 * 1024 * 1024) || (int) ini_get('max_file_uploads') < 10) {
                 $this->warn('For the full 5 MB per-image limit and up to 10 sample photos, set upload_max_filesize=5M and post_max_size=64M in the PHP settings used by Herd. CLI and web PHP settings may differ.');
             }
             if ($this->option('offline')) {

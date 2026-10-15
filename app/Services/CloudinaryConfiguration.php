@@ -6,6 +6,9 @@ use RuntimeException;
 
 class CloudinaryConfiguration
 {
+    /**
+     * @return array<string, mixed>
+     */
     public function credentials(): array
     {
         $configuration = config('cloudinary', []);

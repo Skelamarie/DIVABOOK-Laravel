@@ -5,6 +5,7 @@ namespace Tests\Feature\DivaBook;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Inertia\Testing\AssertableInertia;
 use Mockery;
+use MongoDB\BSON\ObjectId;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use RuntimeException;
@@ -68,12 +69,12 @@ class MergeCompatibilityTest extends TestCase
         $bookingModel->shouldReceive('where')->once()->with('_id', '507f1f77bcf86cd799439011')->andReturn($query);
         $query->shouldReceive('where')->once()->with('admin_id', 'DB-1234')->andReturnSelf();
         $record = Mockery::mock();
-        $record->_id = new \MongoDB\BSON\ObjectId('507f1f77bcf86cd799439011');
+        $record->_id = new ObjectId('507f1f77bcf86cd799439011');
         $record->shouldReceive('toArray')->andReturn(['first_name' => 'Ana']);
         $query->shouldReceive('firstOrFail')->once()->andReturn($record);
         $this->withSession(['admin_id' => 'DB-1234'])->get('/admin/bookings/507f1f77bcf86cd799439011')
             ->assertOk()->assertInertia(fn (AssertableInertia $page) => $page->component('Admin/ViewDetails')
-                ->where('booking.id', '507f1f77bcf86cd799439011')->where('booking._id', '507f1f77bcf86cd799439011'));
+            ->where('booking.id', '507f1f77bcf86cd799439011')->where('booking._id', '507f1f77bcf86cd799439011'));
     }
 
     #[RunInSeparateProcess]

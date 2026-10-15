@@ -127,6 +127,12 @@ class RequestsTest extends TestCase
         $this->withSession(['admin_id' => 'DB-1234'])->postJson('/admin/profile', ['color_primary' => 'bad'])->assertUnprocessable()->assertJsonValidationErrors('color_primary');
     }
 
+    public function test_booking_page_rejects_an_array_service_id_before_database_access(): void
+    {
+        $this->getJson('/booking/step-1?service_id[]=one&service_id[]=two')
+            ->assertUnprocessable()->assertJsonValidationErrors('service_id');
+    }
+
     public function test_logout_clears_the_partner_session(): void
     {
         $this->withSession(['admin_id' => 'DB-1234', 'shop_name' => 'Test Salon'])

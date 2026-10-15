@@ -3,9 +3,17 @@ import { Head, Link, useForm } from '@inertiajs/react';
 
 export default function Registration() {
     const [showPassword, setShowPassword] = useState(false);
-    const [clientErrors, setClientErrors] = useState<Record<string, string>>({});
+    const [clientErrors, setClientErrors] = useState<Record<string, string>>(
+        {},
+    );
 
-    const { data, setData, post, processing, errors: serverErrors } = useForm({
+    const {
+        data,
+        setData,
+        post,
+        processing,
+        errors: serverErrors,
+    } = useForm({
         name: '',
         shop_name: '',
         email: '',
@@ -22,13 +30,15 @@ export default function Registration() {
         const newErrors: Record<string, string> = {};
 
         if (!data.name.trim()) newErrors.name = 'Full name is required.';
-        if (!data.shop_name.trim()) newErrors.shop_name = 'Business name is required.';
+        if (!data.shop_name.trim())
+            newErrors.shop_name = 'Business name is required.';
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!data.email.trim()) {
             newErrors.email = 'Business email is required.';
         } else if (!emailRegex.test(data.email)) {
-            newErrors.email = 'Please enter a valid email containing "@" and a domain (e.g. name@domain.com).';
+            newErrors.email =
+                'Please enter a valid email containing "@" and a domain (e.g. name@domain.com).';
         }
 
         if (!data.password) {
@@ -41,11 +51,15 @@ export default function Registration() {
         if (!data.phone.trim()) {
             newErrors.phone = 'Phone number is required.';
         } else if (phoneDigits.length !== 11) {
-            newErrors.phone = 'Phone number must be exactly 11 digits (e.g. 09123456789).';
+            newErrors.phone =
+                'Phone number must be exactly 11 digits (e.g. 09123456789).';
         }
 
-        if (!data.address.trim()) newErrors.address = 'Business address is required.';
-        if (!data.terms) newErrors.terms = 'You must agree to the Partner Terms & Privacy Policy.';
+        if (!data.address.trim())
+            newErrors.address = 'Business address is required.';
+        if (!data.terms)
+            newErrors.terms =
+                'You must agree to the Partner Terms & Privacy Policy.';
 
         setClientErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -87,16 +101,25 @@ export default function Registration() {
                 </span>
             </header>
 
-            <main className="flex-1 max-w-4xl w-full mx-auto my-8 bg-white border border-stone-200 rounded-lg shadow-sm overflow-hidden p-6 sm:p-10">
-                <p className="text-[10px] font-bold text-stone-400 tracking-widest uppercase mb-1">STEP 01 OF 02</p>
-                <h1 className="font-serif text-3xl font-bold text-[#2D4336] mb-1">Partner Registration</h1>
-                <p className="text-xs text-stone-500 mb-6">Enter your business details to create your digital storefront.</p>
+            <main className="mx-auto my-8 w-full max-w-4xl flex-1 overflow-hidden rounded-lg border border-stone-200 bg-white p-6 shadow-sm sm:p-10">
+                <p className="mb-1 text-[10px] font-bold tracking-widest text-stone-400 uppercase">
+                    STEP 01 OF 02
+                </p>
+                <h1 className="mb-1 font-serif text-3xl font-bold text-[#2D4336]">
+                    Partner Registration
+                </h1>
+                <p className="mb-6 text-xs text-stone-500">
+                    Enter your business details to create your digital
+                    storefront.
+                </p>
 
                 {/* Notice Box for Server and Client Validation Errors */}
                 {Object.keys(allErrors).length > 0 && (
-                    <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                        <p className="text-xs font-bold text-red-700 uppercase tracking-wider mb-1">Notice:</p>
-                        <ul className="list-disc list-inside text-xs text-red-600">
+                    <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4">
+                        <p className="mb-1 text-xs font-bold tracking-wider text-red-700 uppercase">
+                            Notice:
+                        </p>
+                        <ul className="list-inside list-disc text-xs text-red-600">
                             {Object.entries(allErrors).map(([key, msg]) => (
                                 <li key={key}>{msg}</li>
                             ))}
@@ -105,7 +128,7 @@ export default function Registration() {
                 )}
 
                 <form onSubmit={submit} noValidate className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div>
                             <label className="mb-1 block text-[10px] font-bold tracking-wider text-stone-600">
                                 FULL NAME
@@ -114,12 +137,20 @@ export default function Registration() {
                                 type="text"
                                 placeholder="Jane Doe"
                                 value={data.name}
-                                onChange={(e) => handleFieldChange('name', e.target.value)}
-                                className={`w-full text-sm p-3 border rounded outline-none text-black bg-white placeholder-stone-400 focus:border-[#2D4336] ${
-                                    allErrors.name ? 'border-red-500 bg-red-50/20' : 'border-stone-300'
+                                onChange={(e) =>
+                                    handleFieldChange('name', e.target.value)
+                                }
+                                className={`w-full rounded border bg-white p-3 text-sm text-black placeholder-stone-400 outline-none focus:border-[#2D4336] ${
+                                    allErrors.name
+                                        ? 'border-red-500 bg-red-50/20'
+                                        : 'border-stone-300'
                                 }`}
                             />
-                            {allErrors.name && <p className="text-red-500 text-xs mt-1 font-medium">{allErrors.name}</p>}
+                            {allErrors.name && (
+                                <p className="mt-1 text-xs font-medium text-red-500">
+                                    {allErrors.name}
+                                </p>
+                            )}
                         </div>
 
                         <div>
@@ -130,12 +161,23 @@ export default function Registration() {
                                 type="text"
                                 placeholder="Lumina Wellness"
                                 value={data.shop_name}
-                                onChange={(e) => handleFieldChange('shop_name', e.target.value)}
-                                className={`w-full text-sm p-3 border rounded outline-none text-black bg-white placeholder-stone-400 focus:border-[#2D4336] ${
-                                    allErrors.shop_name ? 'border-red-500 bg-red-50/20' : 'border-stone-300'
+                                onChange={(e) =>
+                                    handleFieldChange(
+                                        'shop_name',
+                                        e.target.value,
+                                    )
+                                }
+                                className={`w-full rounded border bg-white p-3 text-sm text-black placeholder-stone-400 outline-none focus:border-[#2D4336] ${
+                                    allErrors.shop_name
+                                        ? 'border-red-500 bg-red-50/20'
+                                        : 'border-stone-300'
                                 }`}
                             />
-                            {allErrors.shop_name && <p className="text-red-500 text-xs mt-1 font-medium">{allErrors.shop_name}</p>}
+                            {allErrors.shop_name && (
+                                <p className="mt-1 text-xs font-medium text-red-500">
+                                    {allErrors.shop_name}
+                                </p>
+                            )}
                         </div>
                     </div>
 
@@ -148,12 +190,20 @@ export default function Registration() {
                                 type="email"
                                 placeholder="contact@business.com"
                                 value={data.email}
-                                onChange={(e) => handleFieldChange('email', e.target.value)}
-                                className={`w-full text-sm p-3 border rounded outline-none text-black bg-white placeholder-stone-400 focus:border-[#2D4336] ${
-                                    allErrors.email ? 'border-red-500 bg-red-50/20' : 'border-stone-300'
+                                onChange={(e) =>
+                                    handleFieldChange('email', e.target.value)
+                                }
+                                className={`w-full rounded border bg-white p-3 text-sm text-black placeholder-stone-400 outline-none focus:border-[#2D4336] ${
+                                    allErrors.email
+                                        ? 'border-red-500 bg-red-50/20'
+                                        : 'border-stone-300'
                                 }`}
                             />
-                            {allErrors.email && <p className="text-red-500 text-xs mt-1 font-medium">{allErrors.email}</p>}
+                            {allErrors.email && (
+                                <p className="mt-1 text-xs font-medium text-red-500">
+                                    {allErrors.email}
+                                </p>
+                            )}
                         </div>
 
                         <div>
@@ -165,37 +215,60 @@ export default function Registration() {
                                     type={showPassword ? 'text' : 'password'}
                                     placeholder="••••••••"
                                     value={data.password}
-                                    onChange={(e) => handleFieldChange('password', e.target.value)}
-                                    className={`w-full text-sm p-3 border rounded outline-none pr-12 text-black bg-white placeholder-stone-400 focus:border-[#2D4336] ${
-                                        allErrors.password ? 'border-red-500 bg-red-50/20' : 'border-stone-300'
+                                    onChange={(e) =>
+                                        handleFieldChange(
+                                            'password',
+                                            e.target.value,
+                                        )
+                                    }
+                                    className={`w-full rounded border bg-white p-3 pr-12 text-sm text-black placeholder-stone-400 outline-none focus:border-[#2D4336] ${
+                                        allErrors.password
+                                            ? 'border-red-500 bg-red-50/20'
+                                            : 'border-stone-300'
                                     }`}
                                 />
                                 <button
                                     type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-stone-500 hover:text-black select-none"
+                                    onClick={() =>
+                                        setShowPassword(!showPassword)
+                                    }
+                                    className="absolute top-1/2 right-3 -translate-y-1/2 text-xs text-stone-500 select-none hover:text-black"
                                 >
                                     {showPassword ? 'Hide' : 'Show'}
                                 </button>
                             </div>
-                            {allErrors.password && <p className="text-red-500 text-xs mt-1 font-medium">{allErrors.password}</p>}
+                            {allErrors.password && (
+                                <p className="mt-1 text-xs font-medium text-red-500">
+                                    {allErrors.password}
+                                </p>
+                            )}
                         </div>
                     </div>
 
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div>
-                            <label className="block text-[10px] font-bold tracking-wider text-stone-600 mb-1">PHONE NUMBER (11 DIGITS)</label>
+                            <label className="mb-1 block text-[10px] font-bold tracking-wider text-stone-600">
+                                PHONE NUMBER (11 DIGITS)
+                            </label>
                             <input
                                 type="tel"
                                 maxLength={11}
                                 placeholder="09123456789"
                                 value={data.phone}
-                                onChange={(e) => handleFieldChange('phone', e.target.value)}
-                                className={`w-full text-sm p-3 border rounded outline-none text-black bg-white placeholder-stone-400 focus:border-[#2D4336] ${
-                                    allErrors.phone ? 'border-red-500 bg-red-50/20' : 'border-stone-300'
+                                onChange={(e) =>
+                                    handleFieldChange('phone', e.target.value)
+                                }
+                                className={`w-full rounded border bg-white p-3 text-sm text-black placeholder-stone-400 outline-none focus:border-[#2D4336] ${
+                                    allErrors.phone
+                                        ? 'border-red-500 bg-red-50/20'
+                                        : 'border-stone-300'
                                 }`}
                             />
-                            {allErrors.phone && <p className="text-red-500 text-xs mt-1 font-medium">{allErrors.phone}</p>}
+                            {allErrors.phone && (
+                                <p className="mt-1 text-xs font-medium text-red-500">
+                                    {allErrors.phone}
+                                </p>
+                            )}
                         </div>
 
                         <div>
@@ -206,12 +279,20 @@ export default function Registration() {
                                 type="text"
                                 placeholder="123 Serenity Way, Suite 400"
                                 value={data.address}
-                                onChange={(e) => handleFieldChange('address', e.target.value)}
-                                className={`w-full text-sm p-3 border rounded outline-none text-black bg-white placeholder-stone-400 focus:border-[#2D4336] ${
-                                    allErrors.address ? 'border-red-500 bg-red-50/20' : 'border-stone-300'
+                                onChange={(e) =>
+                                    handleFieldChange('address', e.target.value)
+                                }
+                                className={`w-full rounded border bg-white p-3 text-sm text-black placeholder-stone-400 outline-none focus:border-[#2D4336] ${
+                                    allErrors.address
+                                        ? 'border-red-500 bg-red-50/20'
+                                        : 'border-stone-300'
                                 }`}
                             />
-                            {allErrors.address && <p className="text-red-500 text-xs mt-1 font-medium">{allErrors.address}</p>}
+                            {allErrors.address && (
+                                <p className="mt-1 text-xs font-medium text-red-500">
+                                    {allErrors.address}
+                                </p>
+                            )}
                         </div>
                     </div>
 
@@ -221,14 +302,24 @@ export default function Registration() {
                                 type="checkbox"
                                 id="terms"
                                 checked={data.terms}
-                                onChange={(e) => handleFieldChange('terms', e.target.checked)}
+                                onChange={(e) =>
+                                    handleFieldChange('terms', e.target.checked)
+                                }
                                 className="rounded text-[#2D4336] focus:ring-[#2D4336]"
                             />
-                            <label htmlFor="terms" className="text-xs text-stone-700 cursor-pointer">
-                                I agree to the Partner Terms &amp; Privacy Policy.
+                            <label
+                                htmlFor="terms"
+                                className="cursor-pointer text-xs text-stone-700"
+                            >
+                                I agree to the Partner Terms &amp; Privacy
+                                Policy.
                             </label>
                         </div>
-                        {allErrors.terms && <p className="text-red-500 text-xs mt-1 font-medium">{allErrors.terms}</p>}
+                        {allErrors.terms && (
+                            <p className="mt-1 text-xs font-medium text-red-500">
+                                {allErrors.terms}
+                            </p>
+                        )}
                     </div>
 
                     <button
@@ -246,7 +337,7 @@ export default function Registration() {
                     Already have an account?{' '}
                     <Link
                         href="/login"
-                        className="text-[#2D4336] font-bold underline hover:text-emerald-900"
+                        className="font-bold text-[#2D4336] underline hover:text-emerald-900"
                     >
                         Log in
                     </Link>

@@ -2,9 +2,11 @@
 
 Laravel, React/Inertia, MongoDB, and the Cloudinary PHP SDK. The latest changes move validation into Form Requests, use the starter sidebar for admin navigation, fix booking inputs, and standardize image uploads.
 
+**Start here:** [Windows Herd setup for teammates](TEAM-SETUP.md). After pulling and configuring your private environment, run `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\setup-herd.ps1` from this project folder.
+
 ## Team setup after pulling
 
-Use PHP 8.4 for both the project in Herd and the terminal. The current dependencies were tested with PHP 8.4; do not use the PHP 8.6 development runtime. Enable MongoDB, cURL, fileinfo, mbstring, and OpenSSL. The automated suite also needs PDO SQLite.
+Use an up-to-date PHP 8.4.x for both the project in Herd and the terminal. This lock file needs PHP >=8.4.1 and the MongoDB PHP extension >=2.4 within 2.x; CI installs MongoDB 2.5.4. Do not use the PHP 8.6 development runtime. Enable cURL, fileinfo, mbstring, and OpenSSL. The automated suite also needs PDO SQLite, DOM, XML, and XMLWriter. Node 22.18+ within 22.x or Node 24.11+ meets the installed Vite+ requirement.
 
 From your local project directory, with your own uncommitted work saved:
 
@@ -28,20 +30,20 @@ Then run:
 
     php artisan optimize:clear
     npm run build
-    npm run types:check
-    php artisan test --filter=DivaBook
+    composer ci:check
+    php artisan mongodb:check
     php artisan cloudinary:check
 
-The production build generates Wayfinder route/action types. For frontend development use npm run dev instead of relying on an old build. Cloudinary's diagnostic checks local configuration, PHP limits, authentication, and folder mode; it uploads no images. The current suite has 36 tests and 235 assertions. Automated upload tests use simulated API responses; separately verify actual uploads in the app.
+The production build generates Wayfinder route/action types. For frontend development use npm run dev instead of relying on an old build. MongoDB's diagnostic pings the database without writing documents. Cloudinary's diagnostic checks local configuration, PHP limits, authentication, and folder mode; it uploads no images. The full CI suite checks frontend formatting/lint, TypeScript, PHP formatting, PHP static analysis, and all 79 tests (437 assertions). Automated upload tests use simulated API responses; separately verify actual uploads in the app. PHPStan has an explicit 512 MB limit to support the complete analysis.
 
 ## Image paths
 
-| Upload | Cloudinary path | MongoDB field |
-| --- | --- | --- |
-| Customer receipt | Receipts/{admin_id}/{sender_name or customer full name} | bookings.receipt_path |
-| Customer inspiration | Inspo/{admin_id}/{last_name} | bookings.reference_image |
-| Service sample | Samples/{admin_id}/{service_name}/Image_N | services.photos |
-| Logo | PFP/{admin_id}/Image_N | partners.branding.logo_path |
+| Upload               | Cloudinary path                                         | MongoDB field               |
+| -------------------- | ------------------------------------------------------- | --------------------------- |
+| Customer receipt     | Receipts/{admin_id}/{sender_name or customer full name} | bookings.receipt_path       |
+| Customer inspiration | Inspo/{admin_id}/{last_name}                            | bookings.reference_image    |
+| Service sample       | Samples/{admin_id}/{service_name}/Image_N               | services.photos             |
+| Logo                 | PFP/{admin_id}/Image_N                                  | partners.branding.logo_path |
 
 Names are sanitized. Receipt/inspiration collisions get unique suffixes; sample/logo numbering advances until an unused name is available. Uploads do not overwrite existing images. Customer folders use the selected service's admin ID; admin uploads use the partner session. Dynamic mode sets both the Media Library folder and the full public ID. The legacy SDK adapter explicitly signs the newer folder fields and sends settings=true when requesting environment settings.
 

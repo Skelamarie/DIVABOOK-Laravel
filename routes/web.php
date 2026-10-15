@@ -346,7 +346,7 @@ Route::prefix('admin')->middleware(EnsurePartnerSession::class)->group(function 
         foreach ($bookings as $doc) {
             try {
                 $dateKey = Carbon::parse($doc->selected_date)->format('Y-n-j');
-            } catch (\Throwable $exception) {
+            } catch (Throwable $exception) {
                 // An invalid legacy date must not prevent other bookings displaying.
                 $dateKey = 'unscheduled';
             }
@@ -447,5 +447,7 @@ Route::prefix('admin')->middleware(EnsurePartnerSession::class)->group(function 
     Route::delete('/services/{id}', [ServiceController::class, 'destroy'])->name('admin.services.destroy');
 });
 // Keep the starter-kit settings routes available for its existing components.
-Route::redirect('/dashboard', '/admin/overview')->name('dashboard');
+Route::get('/dashboard', fn (Request $request) => $request->session()->has('admin_id')
+    ? to_route('admin.overview')
+    : to_route('login'))->name('dashboard');
 require __DIR__.'/settings.php';

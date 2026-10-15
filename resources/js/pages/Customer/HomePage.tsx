@@ -19,10 +19,7 @@ interface HomePageProps {
     };
 }
 
-export default function HomePage({
-    recommended = [],
-    catalogCategories,
-}: HomePageProps) {
+export default function HomePage({ recommended = [] }: HomePageProps) {
     return (
         <div className="flex min-h-screen flex-col bg-white font-sans text-[#0C0A09]">
             <Head>
@@ -334,7 +331,7 @@ export default function HomePage({
                     </div>
                 </div>
 
-                <div className="mt-14 pt-5 border-t border-[#E7E5E4] text-center text-xs text-[#78716C]">
+                <div className="mt-14 border-t border-[#E7E5E4] pt-5 text-center text-xs text-[#78716C]">
                     © {new Date().getFullYear()} DivaBook. The Luxury of Care.
                 </div>
             </footer>

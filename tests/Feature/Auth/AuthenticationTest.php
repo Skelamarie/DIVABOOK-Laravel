@@ -4,89 +4,77 @@ namespace Tests\Feature\Auth;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\RateLimiter;
-use Laravel\Fortify\Features;
+use Illuminate\Support\Facades\Hash;
+use Mockery;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_login_screen_can_be_rendered()
+    public function test_login_screen_can_be_rendered(): void
     {
-        $response = $this->get(route('login'));
-
-        $response->assertOk();
+        $this->get(route('login'))->assertOk();
     }
 
-    public function test_users_can_authenticate_using_the_login_screen()
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
+    public function test_partners_can_authenticate_with_admin_id_email_and_password(): void
     {
-        $user = User::factory()->create();
-
-        $response = $this->post(route('login.store'), [
-            'email' => $user->email,
-            'password' => 'password',
-        ]);
-
-        $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
+        $this->mockPartner((object) ['admin_id' => 'DB-1234', 'shop_name' => 'Salon', 'password' => Hash::make('password')]);
+        $this->post(route('login.store'), $this->credentials())
+            ->assertRedirect(route('admin.overview'))
+            ->assertSessionHas('admin_id', 'DB-1234')->assertSessionHas('shop_name', 'Salon');
     }
 
-    public function test_users_with_two_factor_enabled_are_redirected_to_two_factor_challenge()
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
+    public function test_an_unmatched_admin_id_email_pair_cannot_create_a_partner_session(): void
     {
-        $this->skipUnlessFortifyHas(Features::twoFactorAuthentication());
+        $this->mockPartner(null);
+        $this->post(route('login.store'), $this->credentials())->assertSessionHasErrors('auth_failed')
+            ->assertSessionMissing('admin_id')->assertSessionHasInput('admin_id', 'DB-1234');
+        $this->assertNull(session()->getOldInput('password'));
+    }
 
-        Features::twoFactorAuthentication([
-            'confirm' => true,
-            'confirmPassword' => true,
-        ]);
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
+    public function test_partners_cannot_authenticate_with_an_invalid_password(): void
+    {
+        $this->mockPartner((object) ['admin_id' => 'DB-1234', 'shop_name' => 'Salon', 'password' => Hash::make('correct-password')]);
+        $this->post(route('login.store'), $this->credentials())->assertSessionHasErrors('auth_failed')->assertSessionMissing('admin_id');
+    }
 
-        $user = User::factory()->withTwoFactor()->create();
-
-        $response = $this->post(route('login'), [
-            'email' => $user->email,
-            'password' => 'password',
-        ]);
-
-        $response->assertRedirect(route('two-factor.login'));
-        $response->assertSessionHas('login.id', $user->id);
+    public function test_logout_clears_partner_and_starter_user_sessions(): void
+    {
+        $this->actingAs(User::factory()->create())->withSession(['admin_id' => 'DB-1234', 'shop_name' => 'Salon'])
+            ->post(route('logout'))->assertRedirect(route('login'))->assertSessionMissing('admin_id')->assertSessionMissing('shop_name');
         $this->assertGuest();
     }
 
-    public function test_users_can_not_authenticate_with_invalid_password()
+    public function test_login_attempts_are_rate_limited_before_database_access(): void
     {
-        $user = User::factory()->create();
-
-        $this->post(route('login.store'), [
-            'email' => $user->email,
-            'password' => 'wrong-password',
-        ]);
-
-        $this->assertGuest();
+        $data = ['email' => 'throttle@example.com', 'password' => 'wrong-password'];
+        for ($attempt = 0; $attempt < 5; $attempt++) {
+            $this->postJson(route('login.store'), $data)->assertUnprocessable()->assertJsonValidationErrors('admin_id');
+        }
+        $this->postJson(route('login.store'), $data)->assertTooManyRequests();
     }
 
-    public function test_users_can_logout()
+    /** @return array<string, string> */
+    private function credentials(): array
     {
-        $user = User::factory()->create();
-
-        $response = $this->actingAs($user)->post(route('logout'));
-
-        $response->assertRedirect(route('home'));
-
-        $this->assertGuest();
+        return ['admin_id' => 'DB-1234', 'email' => 'salon@example.com', 'password' => 'password'];
     }
 
-    public function test_users_are_rate_limited()
+    private function mockPartner(?object $partner): void
     {
-        $user = User::factory()->create();
-
-        RateLimiter::increment(md5('login'.implode('|', [$user->email, '127.0.0.1'])), amount: 5);
-
-        $response = $this->post(route('login.store'), [
-            'email' => $user->email,
-            'password' => 'wrong-password',
-        ]);
-
-        $response->assertTooManyRequests();
+        $model = Mockery::mock('alias:App\Models\Partner');
+        $query = Mockery::mock();
+        $model->shouldReceive('where')->once()->with('admin_id', 'DB-1234')->andReturn($query);
+        $query->shouldReceive('where')->once()->with('email', 'salon@example.com')->andReturnSelf();
+        $query->shouldReceive('first')->once()->andReturn($partner);
     }
 }

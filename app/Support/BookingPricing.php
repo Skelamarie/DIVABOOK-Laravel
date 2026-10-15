@@ -19,6 +19,10 @@ class BookingPricing
 
     public const REMOVAL = 150;
 
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, string|int|float|null>
+     */
     public static function calculate(Service $service, array $data): array
     {
         $base = self::SERVICES[$data['service']] ?? ['name' => $service->name, 'price' => (float) $service->rate];

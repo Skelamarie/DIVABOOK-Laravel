@@ -11,6 +11,7 @@ class UpdateProfileRequest extends FormRequest
         return $this->session()->has('admin_id');
     }
 
+    /** @return array<string, list<mixed>> */
     public function rules(): array
     {
         return [

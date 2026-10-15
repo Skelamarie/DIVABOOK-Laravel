@@ -8,7 +8,7 @@ class Inquiry extends Model
 {
     protected $connection = 'mongodb';
 
-    protected $collection = 'inquiries';
+    protected $table = 'inquiries';
 
     protected $fillable = ['fullname', 'email', 'type', 'message'];
 }

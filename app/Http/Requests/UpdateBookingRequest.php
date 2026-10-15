@@ -12,6 +12,7 @@ class UpdateBookingRequest extends FormRequest
         return $this->session()->has('admin_id');
     }
 
+    /** @return array<string, list<mixed>> */
     public function rules(): array
     {
         return ['status' => ['required', Rule::in(['pending', 'approved', 'confirmed', 'completed', 'declined', 'cancelled'])]];

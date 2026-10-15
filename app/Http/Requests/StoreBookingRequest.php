@@ -39,6 +39,7 @@ class StoreBookingRequest extends FormRequest
         }
     }
 
+    /** @return array<string, list<mixed>> */
     public function rules(): array
     {
         return [
@@ -64,6 +65,7 @@ class StoreBookingRequest extends FormRequest
         ];
     }
 
+    /** @return list<\Closure(Validator): void> */
     public function after(): array
     {
         return [function (Validator $validator): void {

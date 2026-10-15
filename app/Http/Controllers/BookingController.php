@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateBookingRequest;
 use App\Http\Requests\StoreBookingRequest;
 use App\Http\Requests\UpdateBookingRequest;
 use App\Models\Booking;
@@ -11,16 +12,15 @@ use App\Services\CloudinaryService;
 use App\Support\BookingPricing;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Throwable;
 
 class BookingController extends Controller
 {
-    public function create(Request $request): Response
+    public function create(CreateBookingRequest $request): Response
     {
-        $service = $request->filled('service_id') ? Service::findOrFail($request->query('service_id')) : Service::firstOrFail();
+        $service = $request->filled('service_id') ? Service::findOrFail($request->string('service_id')->toString()) : Service::firstOrFail();
         $partner = Partner::where('admin_id', $service->admin_id)->firstOrFail();
 
         return Inertia::render('Customer/BookingStep1', [
@@ -30,6 +30,7 @@ class BookingController extends Controller
         ]);
     }
 
+    /** @return array<string, list<string>> */
     public static function occupiedSlots(string $adminId): array
     {
         return Booking::where('admin_id', $adminId)->whereIn('status', ['approved', 'confirmed'])
@@ -40,7 +41,7 @@ class BookingController extends Controller
     public function store(StoreBookingRequest $request, CloudinaryService $uploads): RedirectResponse
     {
         $data = $request->validated();
-        $service = Service::findOrFail($data['service_id']);
+        $service = Service::findOrFail($request->string('service_id')->toString());
         $prices = BookingPricing::calculate($service, $data);
         $uploaded = [];
         $failureField = 'receipt_file';

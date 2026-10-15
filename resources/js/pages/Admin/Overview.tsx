@@ -11,7 +11,7 @@ interface Props {
     };
 }
 
-export default function Overview({ partner, stats }: Props) {
+export default function Overview({ stats }: Props) {
     const [liveStats, setLiveStats] = useState(stats);
     const [todayItems, setTodayItems] = useState<any[]>([]);
     const [pendingItems, setPendingItems] = useState<any[]>([]);
@@ -40,7 +40,7 @@ export default function Overview({ partner, stats }: Props) {
     };
 
     useEffect(() => {
-        fetchLive();
+        void fetchLive();
         const interval = setInterval(fetchLive, 5000);
         return () => clearInterval(interval);
     }, []);

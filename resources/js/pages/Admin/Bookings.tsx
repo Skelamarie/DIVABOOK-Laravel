@@ -52,7 +52,6 @@ const dateValue = (date: Date) =>
     ].join('-');
 
 export default function Bookings({
-    partner,
     appointments = {},
     pendingRequests = [],
 }: Props) {
@@ -171,7 +170,7 @@ export default function Bookings({
         if (h === 12 && ampm === 'AM') h = 0;
         if (h < 12 && ampm === 'PM') h += 12;
 
-        const hoursFromStart = (h - 9) + (m / 60);
+        const hoursFromStart = h - 9 + m / 60;
         return Math.max(0, hoursFromStart * 64);
     };
 
@@ -244,14 +243,15 @@ export default function Bookings({
                             Booking &amp; Appointment
                         </h1>
                         <p className="text-xs text-stone-500">
-                            Manage your appointment calendar and customer inquiries.
+                            Manage your appointment calendar and customer
+                            inquiries.
                         </p>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                    <div className="lg:col-span-8 bg-white border border-stone-200 rounded-xl shadow-sm flex flex-col overflow-hidden">
-                        <div className="p-4 border-b border-stone-200 flex flex-wrap items-center justify-between gap-3">
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+                    <div className="flex flex-col overflow-hidden rounded-xl border border-stone-200 bg-white shadow-sm lg:col-span-8">
+                        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-stone-200 p-4">
                             <div className="flex items-center gap-3">
                                 <h2 className="font-serif text-lg font-bold text-[#064E3B]">
                                     {currentDate.toLocaleDateString('en-US', {
@@ -260,11 +260,11 @@ export default function Bookings({
                                     })}
                                 </h2>
 
-                                <div className="flex items-center border border-stone-200 rounded-md overflow-hidden bg-white">
+                                <div className="flex items-center overflow-hidden rounded-md border border-stone-200 bg-white">
                                     <button
                                         type="button"
                                         onClick={() => navigate(-1)}
-                                        className="px-2.5 py-1 text-stone-600 hover:bg-stone-50 text-sm font-bold border-r border-stone-200 transition cursor-pointer"
+                                        className="cursor-pointer border-r border-stone-200 px-2.5 py-1 text-sm font-bold text-stone-600 transition hover:bg-stone-50"
                                     >
                                         &lsaquo;
                                     </button>
@@ -300,7 +300,7 @@ export default function Bookings({
                                     <button
                                         type="button"
                                         onClick={() => navigate(1)}
-                                        className="px-2.5 py-1 text-stone-600 hover:bg-stone-50 text-sm font-bold border-l border-stone-200 transition cursor-pointer"
+                                        className="cursor-pointer border-l border-stone-200 px-2.5 py-1 text-sm font-bold text-stone-600 transition hover:bg-stone-50"
                                     >
                                         &rsaquo;
                                     </button>
@@ -312,21 +312,21 @@ export default function Bookings({
                                 <button
                                     type="button"
                                     onClick={() => setViewMode('day')}
-                                    className={`px-3 py-1 text-xs font-semibold rounded-md transition cursor-pointer ${viewMode === 'day' ? 'bg-white shadow-sm text-stone-900' : 'text-stone-500 hover:text-stone-800'}`}
+                                    className={`cursor-pointer rounded-md px-3 py-1 text-xs font-semibold transition ${viewMode === 'day' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500 hover:text-stone-800'}`}
                                 >
                                     Day
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => setViewMode('week')}
-                                    className={`px-3 py-1 text-xs font-semibold rounded-md transition cursor-pointer ${viewMode === 'week' ? 'bg-white shadow-sm text-stone-900' : 'text-stone-500 hover:text-stone-800'}`}
+                                    className={`cursor-pointer rounded-md px-3 py-1 text-xs font-semibold transition ${viewMode === 'week' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500 hover:text-stone-800'}`}
                                 >
                                     Week
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => setViewMode('month')}
-                                    className={`px-3 py-1 text-xs font-semibold rounded-md transition cursor-pointer ${viewMode === 'month' ? 'bg-white shadow-sm text-stone-900' : 'text-stone-500 hover:text-stone-800'}`}
+                                    className={`cursor-pointer rounded-md px-3 py-1 text-xs font-semibold transition ${viewMode === 'month' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500 hover:text-stone-800'}`}
                                 >
                                     Month
                                 </button>
@@ -335,14 +335,18 @@ export default function Bookings({
 
                         {(viewMode === 'day' || viewMode === 'week') && (
                             <div className="overflow-x-auto">
-                                <div className={`min-w-[650px] grid ${viewMode === 'day' ? 'grid-cols-[70px_1fr]' : 'grid-cols-[70px_repeat(7,1fr)]'} divide-x divide-stone-200`}>
-                                    <div className="h-10 bg-stone-50/50 border-b border-stone-200"></div>
+                                <div
+                                    className={`grid min-w-[650px] ${viewMode === 'day' ? 'grid-cols-[70px_1fr]' : 'grid-cols-[70px_repeat(7,1fr)]'} divide-x divide-stone-200`}
+                                >
+                                    <div className="h-10 border-b border-stone-200 bg-stone-50/50"></div>
 
                                     {daysToRender.map((day) => (
                                         <div
                                             key={`day-header-${day.dateKey}`}
-                                            className={`h-10 border-b border-stone-200 flex items-center justify-center font-bold text-xs ${
-                                                day.isToday ? 'text-emerald-800 bg-emerald-50/40' : 'text-stone-600 bg-stone-50/30'
+                                            className={`flex h-10 items-center justify-center border-b border-stone-200 text-xs font-bold ${
+                                                day.isToday
+                                                    ? 'bg-emerald-50/40 text-emerald-800'
+                                                    : 'bg-stone-50/30 text-stone-600'
                                             }`}
                                         >
                                             {day.label}
@@ -351,7 +355,10 @@ export default function Bookings({
 
                                     <div className="divide-y divide-stone-100 bg-stone-50/20">
                                         {TIME_SLOTS.map((slot) => (
-                                            <div key={`timeslot-label-${slot}`} className="h-16 text-[10px] text-stone-400 font-medium px-2 pt-1">
+                                            <div
+                                                key={`timeslot-label-${slot}`}
+                                                className="h-16 px-2 pt-1 text-[10px] font-medium text-stone-400"
+                                            >
                                                 {slot}
                                             </div>
                                         ))}
@@ -361,20 +368,37 @@ export default function Bookings({
                                         const dayAppts =
                                             appointments[day.dateKey] || [];
                                         return (
-                                            <div key={`day-col-${day.dateKey}`} className="relative divide-y divide-stone-100 min-h-[448px]">
+                                            <div
+                                                key={`day-col-${day.dateKey}`}
+                                                className="relative min-h-[448px] divide-y divide-stone-100"
+                                            >
                                                 {TIME_SLOTS.map((slot) => (
-                                                    <div key={`grid-line-${day.dateKey}-${slot}`} className="h-16"></div>
+                                                    <div
+                                                        key={`grid-line-${day.dateKey}-${slot}`}
+                                                        className="h-16"
+                                                    ></div>
                                                 ))}
 
                                                 {dayAppts.map((appt, idx) => {
-                                                    const topPos = calculateTopOffset(appt.time);
-                                                    const uniqueKey = appt.id ? `appt-${appt.id}` : `appt-${day.dateKey}-${idx}`;
+                                                    const topPos =
+                                                        calculateTopOffset(
+                                                            appt.time,
+                                                        );
+                                                    const uniqueKey = appt.id
+                                                        ? `appt-${appt.id}`
+                                                        : `appt-${day.dateKey}-${idx}`;
                                                     return (
                                                         <div
                                                             key={uniqueKey}
-                                                            onClick={() => setSelectedAppt(appt)}
-                                                            style={{ top: `${topPos}px` }}
-                                                            className={`absolute left-1 right-1 p-1.5 text-[10px] rounded shadow-xs cursor-pointer z-10 hover:opacity-90 transition ${getStatusStyle(
+                                                            onClick={() =>
+                                                                setSelectedAppt(
+                                                                    appt,
+                                                                )
+                                                            }
+                                                            style={{
+                                                                top: `${topPos}px`,
+                                                            }}
+                                                            className={`absolute right-1 left-1 z-10 cursor-pointer rounded p-1.5 text-[10px] shadow-xs transition hover:opacity-90 ${getStatusStyle(
                                                                 appt.type,
                                                                 appt.status,
                                                             )}`}
@@ -397,16 +421,32 @@ export default function Bookings({
 
                         {viewMode === 'month' && (
                             <div className="p-4">
-                                <div className="grid grid-cols-7 gap-2 border border-stone-200 rounded-lg p-3 bg-stone-50/50">
-                                    {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
-                                        <div key={`month-header-${day}`} className="text-center font-bold text-xs text-stone-400 py-1">
+                                <div className="grid grid-cols-7 gap-2 rounded-lg border border-stone-200 bg-stone-50/50 p-3">
+                                    {[
+                                        'Mon',
+                                        'Tue',
+                                        'Wed',
+                                        'Thu',
+                                        'Fri',
+                                        'Sat',
+                                        'Sun',
+                                    ].map((day) => (
+                                        <div
+                                            key={`month-header-${day}`}
+                                            className="py-1 text-center text-xs font-bold text-stone-400"
+                                        >
                                             {day}
                                         </div>
                                     ))}
 
                                     {monthCells.map((cell, i) => {
                                         if (!cell) {
-                                            return <div key={`month-empty-${i}`} className="min-h-[80px]" />;
+                                            return (
+                                                <div
+                                                    key={`month-empty-${i}`}
+                                                    className="min-h-[80px]"
+                                                />
+                                            );
                                         }
 
                                         const dayAppts =
@@ -415,9 +455,11 @@ export default function Bookings({
                                         return (
                                             <div
                                                 key={`month-cell-${cell.dateKey}`}
-                                                className={`bg-white border ${
-                                                    cell.isToday ? 'border-emerald-500 ring-1 ring-emerald-500' : 'border-stone-100'
-                                                } rounded min-h-[80px] p-1.5 flex flex-col justify-between`}
+                                                className={`border bg-white ${
+                                                    cell.isToday
+                                                        ? 'border-emerald-500 ring-1 ring-emerald-500'
+                                                        : 'border-stone-100'
+                                                } flex min-h-[80px] flex-col justify-between rounded p-1.5`}
                                             >
                                                 <span
                                                     className={`text-[10px] font-bold ${cell.isToday ? 'text-emerald-700' : 'text-stone-400'}`}
@@ -425,19 +467,29 @@ export default function Bookings({
                                                     {cell.dayNum}
                                                 </span>
 
-                                                <div className="space-y-1 overflow-y-auto max-h-[60px]">
-                                                    {dayAppts.map((appt, idx) => (
-                                                        <div
-                                                            key={appt.id ? `month-appt-${appt.id}` : `month-appt-${cell.dateKey}-${idx}`}
-                                                            onClick={() => setSelectedAppt(appt)}
-                                                            className={`p-1 text-[9px] font-bold rounded cursor-pointer truncate ${getStatusStyle(
-                                                                appt.type,
-                                                                appt.status,
-                                                            )}`}
-                                                        >
-                                                            {appt.title}
-                                                        </div>
-                                                    ))}
+                                                <div className="max-h-[60px] space-y-1 overflow-y-auto">
+                                                    {dayAppts.map(
+                                                        (appt, idx) => (
+                                                            <div
+                                                                key={
+                                                                    appt.id
+                                                                        ? `month-appt-${appt.id}`
+                                                                        : `month-appt-${cell.dateKey}-${idx}`
+                                                                }
+                                                                onClick={() =>
+                                                                    setSelectedAppt(
+                                                                        appt,
+                                                                    )
+                                                                }
+                                                                className={`cursor-pointer truncate rounded p-1 text-[9px] font-bold ${getStatusStyle(
+                                                                    appt.type,
+                                                                    appt.status,
+                                                                )}`}
+                                                            >
+                                                                {appt.title}
+                                                            </div>
+                                                        ),
+                                                    )}
                                                 </div>
                                             </div>
                                         );
@@ -448,7 +500,7 @@ export default function Bookings({
                     </div>
 
                     {/* Client Information Inspector Card */}
-                    <aside className="lg:col-span-4 bg-white border border-stone-200 rounded-xl p-6 shadow-sm flex flex-col justify-between h-fit">
+                    <aside className="flex h-fit flex-col justify-between rounded-xl border border-stone-200 bg-white p-6 shadow-sm lg:col-span-4">
                         <div>
                             <div className="mb-4 flex items-center justify-between border-b border-stone-100 pb-3">
                                 <h3 className="font-serif text-sm font-bold text-stone-800">
@@ -470,27 +522,47 @@ export default function Bookings({
                             {selectedAppt ? (
                                 <div className="space-y-4 rounded-lg border border-stone-100 bg-stone-50/50 p-4 text-xs">
                                     <div>
-                                        <span className="text-stone-400 font-bold uppercase text-[9px] block">Customer</span>
-                                        <p className="font-bold text-sm text-stone-800">{selectedAppt.name}</p>
-                                        <p className="text-stone-500">{selectedAppt.email}</p>
+                                        <span className="block text-[9px] font-bold text-stone-400 uppercase">
+                                            Customer
+                                        </span>
+                                        <p className="text-sm font-bold text-stone-800">
+                                            {selectedAppt.name}
+                                        </p>
+                                        <p className="text-stone-500">
+                                            {selectedAppt.email}
+                                        </p>
                                     </div>
                                     <hr className="border-stone-200" />
                                     <div>
-                                        <span className="text-stone-400 font-bold uppercase text-[9px] block">Schedule Details</span>
-                                        <p className="font-bold text-stone-800">{selectedAppt.title}</p>
-                                        <p className="text-stone-600">{selectedAppt.date} @ {selectedAppt.time}</p>
+                                        <span className="block text-[9px] font-bold text-stone-400 uppercase">
+                                            Schedule Details
+                                        </span>
+                                        <p className="font-bold text-stone-800">
+                                            {selectedAppt.title}
+                                        </p>
+                                        <p className="text-stone-600">
+                                            {selectedAppt.date} @{' '}
+                                            {selectedAppt.time}
+                                        </p>
                                     </div>
                                     <hr className="border-stone-200" />
                                     <div>
-                                        <span className="text-stone-400 font-bold uppercase text-[9px] block">Payment &amp; Strategy</span>
-                                        <p className="text-stone-700 font-semibold">{selectedAppt.method?.toUpperCase()} (₱{selectedAppt.paid})</p>
-                                        <p className="italic text-stone-500 mt-2 bg-white border border-stone-200 p-2 rounded">
-                                            &quot;{selectedAppt.request || 'None'}&quot;
+                                        <span className="block text-[9px] font-bold text-stone-400 uppercase">
+                                            Payment &amp; Strategy
+                                        </span>
+                                        <p className="font-semibold text-stone-700">
+                                            {selectedAppt.method?.toUpperCase()}{' '}
+                                            (₱{selectedAppt.paid})
+                                        </p>
+                                        <p className="mt-2 rounded border border-stone-200 bg-white p-2 text-stone-500 italic">
+                                            &quot;
+                                            {selectedAppt.request || 'None'}
+                                            &quot;
                                         </p>
                                     </div>
                                 </div>
                             ) : (
-                                <div className="bg-stone-50 border border-stone-100 rounded-lg py-12 px-4 text-center text-stone-400 text-xs">
+                                <div className="rounded-lg border border-stone-100 bg-stone-50 px-4 py-12 text-center text-xs text-stone-400">
                                     Select a schedule to view client details
                                 </div>
                             )}
@@ -499,9 +571,9 @@ export default function Bookings({
                 </div>
 
                 {/* Table of Recent Service Inquiries */}
-                <div className="bg-white border border-stone-200 rounded-xl shadow-sm overflow-hidden">
-                    <div className="p-4 border-b border-stone-200 flex justify-between items-center">
-                        <h3 className="font-bold text-xs uppercase tracking-wider text-stone-800">
+                <div className="overflow-hidden rounded-xl border border-stone-200 bg-white shadow-sm">
+                    <div className="flex items-center justify-between border-b border-stone-200 p-4">
+                        <h3 className="text-xs font-bold tracking-wider text-stone-800 uppercase">
                             Recent Service Inquiries ({pendingRequests.length})
                         </h3>
                     </div>
@@ -529,35 +601,71 @@ export default function Bookings({
                                     </tr>
                                 ) : (
                                     pendingRequests.map((req, idx) => {
-                                        const reqId = (req._id || req.id || String(idx)).toString();
+                                        const reqId = (
+                                            req._id ||
+                                            req.id ||
+                                            String(idx)
+                                        ).toString();
                                         return (
-                                            <tr key={`req-row-${reqId}`} className="hover:bg-stone-50">
+                                            <tr
+                                                key={`req-row-${reqId}`}
+                                                className="hover:bg-stone-50"
+                                            >
                                                 <td className="p-3 font-bold text-stone-800">
-                                                    {req.first_name} {req.last_name}
-                                                    <span className="block font-normal text-stone-400 text-[10px]">{req.email}</span>
+                                                    {req.first_name}{' '}
+                                                    {req.last_name}
+                                                    <span className="block text-[10px] font-normal text-stone-400">
+                                                        {req.email}
+                                                    </span>
                                                 </td>
-                                                <td className="p-3">{req.service_name || 'Service'}</td>
-                                                <td className="p-3 text-stone-500">{req.selected_date} • {req.selected_time}</td>
-                                                <td className="p-3 capitalize text-stone-600">{req.payment_strategy || 'N/A'}</td>
-                                                <td className="p-3 font-bold">₱{Number(req.amount_paid || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
-                                                <td className="p-3 text-right space-x-2">
+                                                <td className="p-3">
+                                                    {req.service_name ||
+                                                        'Service'}
+                                                </td>
+                                                <td className="p-3 text-stone-500">
+                                                    {req.selected_date} •{' '}
+                                                    {req.selected_time}
+                                                </td>
+                                                <td className="p-3 text-stone-600 capitalize">
+                                                    {req.payment_strategy ||
+                                                        'N/A'}
+                                                </td>
+                                                <td className="p-3 font-bold">
+                                                    ₱
+                                                    {Number(
+                                                        req.amount_paid || 0,
+                                                    ).toLocaleString('en-US', {
+                                                        minimumFractionDigits: 2,
+                                                    })}
+                                                </td>
+                                                <td className="space-x-2 p-3 text-right">
                                                     <button
                                                         type="button"
-                                                        onClick={() => updateStatus(reqId, 'approved')}
-                                                        className="px-3 py-1 bg-[#064E3B] hover:bg-[#043d2e] text-white rounded font-bold text-[10px] cursor-pointer"
+                                                        onClick={() =>
+                                                            updateStatus(
+                                                                reqId,
+                                                                'approved',
+                                                            )
+                                                        }
+                                                        className="cursor-pointer rounded bg-[#064E3B] px-3 py-1 text-[10px] font-bold text-white hover:bg-[#043d2e]"
                                                     >
                                                         Approve
                                                     </button>
                                                     <button
                                                         type="button"
-                                                        onClick={() => updateStatus(reqId, 'declined')}
-                                                        className="px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded font-bold text-[10px] cursor-pointer"
+                                                        onClick={() =>
+                                                            updateStatus(
+                                                                reqId,
+                                                                'declined',
+                                                            )
+                                                        }
+                                                        className="cursor-pointer rounded bg-red-100 px-3 py-1 text-[10px] font-bold text-red-700 hover:bg-red-200"
                                                     >
                                                         Decline
                                                     </button>
                                                     <Link
                                                         href={`/admin/bookings/${reqId}`}
-                                                        className="px-2 py-1 text-stone-500 hover:text-stone-800 font-bold underline text-[10px]"
+                                                        className="px-2 py-1 text-[10px] font-bold text-stone-500 underline hover:text-stone-800"
                                                     >
                                                         Details
                                                     </Link>

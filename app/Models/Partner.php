@@ -2,13 +2,22 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use MongoDB\Laravel\Auth\User as Authenticatable;
-use MongoDB\Laravel\Eloquent\Relations\HasMany;
 
+/**
+ * @property string $admin_id
+ * @property string $name
+ * @property string $shop_name
+ * @property string $email
+ * @property string $password
+ * @property array<string, mixed>|null $branding
+ */
 class Partner extends Authenticatable
 {
     protected $connection = 'mongodb';
-    protected $collection = 'partners';
+
+    protected $table = 'partners';
 
     protected $fillable = [
         'admin_id',
@@ -35,11 +44,13 @@ class Partner extends Authenticatable
         ];
     }
 
+    /** @return HasMany<Service, $this> */
     public function services(): HasMany
     {
         return $this->hasMany(Service::class, 'admin_id', 'admin_id');
     }
 
+    /** @return HasMany<Booking, $this> */
     public function bookings(): HasMany
     {
         return $this->hasMany(Booking::class, 'admin_id', 'admin_id');

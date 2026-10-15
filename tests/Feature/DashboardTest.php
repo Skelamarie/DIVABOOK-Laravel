@@ -2,26 +2,18 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class DashboardTest extends TestCase
 {
-    use RefreshDatabase;
-
-    public function test_guests_are_redirected_to_the_login_page()
+    public function test_guests_are_redirected_to_the_partner_login_page(): void
     {
-        $response = $this->get(route('dashboard'));
-        $response->assertRedirect(route('login'));
+        $this->get(route('dashboard'))->assertRedirect(route('login'));
     }
 
-    public function test_authenticated_users_can_visit_the_dashboard()
+    public function test_signed_in_partners_are_redirected_to_the_admin_overview(): void
     {
-        $user = User::factory()->create();
-        $this->actingAs($user);
-
-        $response = $this->get(route('dashboard'));
-        $response->assertOk();
+        $this->withSession(['admin_id' => 'DB-1234', 'shop_name' => 'Salon'])
+            ->get(route('dashboard'))->assertRedirect(route('admin.overview'));
     }
 }

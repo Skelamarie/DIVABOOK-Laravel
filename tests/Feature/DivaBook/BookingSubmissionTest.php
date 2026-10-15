@@ -7,6 +7,7 @@ use App\Http\Requests\StoreBookingRequest;
 use App\Models\Service;
 use App\Services\CloudinaryService;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Stringable;
 use Mockery;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
@@ -34,6 +35,7 @@ class BookingSubmissionTest extends TestCase
 
         $file = UploadedFile::fake()->create('receipt.png', 1, 'image/png');
         $request = Mockery::mock(StoreBookingRequest::class);
+        $request->shouldReceive('string')->with('service_id')->andReturn(new Stringable('507f1f77bcf86cd799439011'));
         $request->shouldReceive('validated')->andReturn([
             'service_id' => '507f1f77bcf86cd799439011', 'service' => 'catalog', 'size' => 'standard',
             'addon' => 'basic', 'removal' => true, 'provider_chooses' => false,

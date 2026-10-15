@@ -2,14 +2,24 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use MongoDB\Laravel\Eloquent\Model;
-use MongoDB\Laravel\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property string $admin_id
+ * @property string $first_name
+ * @property string $last_name
+ * @property string $email
+ * @property string $phone
+ * @property string $selected_date
+ * @property string $selected_time
+ * @property string $status
+ */
 class Booking extends Model
 {
     protected $connection = 'mongodb';
 
-    protected $collection = 'bookings';
+    protected $table = 'bookings';
 
     protected $fillable = [
         'admin_id',
@@ -62,6 +72,7 @@ class Booking extends Model
         ];
     }
 
+    /** @return BelongsTo<Partner, $this> */
     public function partner(): BelongsTo
     {
         return $this->belongsTo(Partner::class, 'admin_id', 'admin_id');

@@ -35,10 +35,9 @@ class TwoFactorChallengeTest extends TestCase
 
         $user = User::factory()->withTwoFactor()->create();
 
-        $this->post(route('login'), [
-            'email' => $user->email,
-            'password' => 'password',
-        ]);
+        // This starter SQL-account screen reads Fortify's challenged-user
+        // session. DivaBook's partner login uses a separate admin session.
+        $this->withSession(['login.id' => $user->id, 'login.remember' => false]);
 
         $this->get(route('two-factor.login'))
             ->assertOk()

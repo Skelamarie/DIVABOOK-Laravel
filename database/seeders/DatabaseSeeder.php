@@ -66,7 +66,7 @@ class DatabaseSeeder extends Seeder
                 'description' => 'Safe removal of old gel polish followed by deep keratin nail hydration.',
                 'rate' => '350',
                 'photos' => ['https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500&q=80'],
-            ]
+            ],
         ];
 
         foreach ($services as $service) {

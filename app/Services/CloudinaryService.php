@@ -13,6 +13,9 @@ class CloudinaryService
 {
     public function __construct(private CloudinaryConfiguration $configuration, private CloudinaryClient $client) {}
 
+    /**
+     * @return array<string, mixed>
+     */
     public function uploadReceipt(UploadedFile $file, string $adminId, string $senderName, string $firstName, string $lastName): array
     {
         $name = trim($senderName) !== '' ? $senderName : trim($firstName.' '.$lastName);
@@ -20,16 +23,25 @@ class CloudinaryService
         return $this->uploadNamed($file, 'Receipts/'.$this->adminSegment($adminId), $this->segment($name, 'Customer'));
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function uploadInspiration(UploadedFile $file, string $adminId, string $lastName): array
     {
         return $this->uploadNamed($file, 'Inspo/'.$this->adminSegment($adminId), $this->segment($lastName, 'Customer'));
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function uploadSample(UploadedFile $file, string $adminId, string $serviceName, int $nextSequence = 1): array
     {
         return $this->uploadNamed($file, 'Samples/'.$this->adminSegment($adminId).'/'.$this->segment($serviceName, 'Service'), null, $nextSequence);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function uploadLogo(UploadedFile $file, string $adminId, int $nextSequence = 1): array
     {
         return $this->uploadNamed($file, 'PFP/'.$this->adminSegment($adminId), null, $nextSequence);
@@ -54,6 +66,9 @@ class CloudinaryService
         });
     }
 
+    /**
+     * @return array{status: string, folder_mode: string}
+     */
     public function checkConnection(): array
     {
         $options = $this->configuration->credentials();
@@ -69,6 +84,9 @@ class CloudinaryService
         }
     }
 
+    /**
+     * @param  list<string>  $publicIds
+     */
     public function cleanup(array $publicIds): void
     {
         foreach ($publicIds as $publicId) {
@@ -86,6 +104,9 @@ class CloudinaryService
             'reason' => $this->configuration->redact($exception->getMessage()), 'exception' => get_class($exception)]);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function uploadNamed(UploadedFile $file, string $folder, ?string $baseName, int $nextSequence = 1): array
     {
         if (! $file->isValid() || ! $file->getRealPath() || ! is_readable($file->getRealPath())) {
